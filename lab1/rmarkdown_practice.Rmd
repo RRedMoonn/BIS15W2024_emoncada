@@ -1,0 +1,62 @@
+---
+title: "RMarkdown Practice"
+date: "2024-01-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Title
+### Title
+#### Title
+
+The fat cat crossed  
+the road 
+
+[BIS 15L Webpage](https://jmledford3115.github.io/datascibiol/)
+
+## End of Lab Practice
+
+### Creating Objects
+
+```{r}
+x <- c(1,9,9,0,2,3)
+```
+
+```{r}
+y <- c(2,0,1,2,3,11)
+```
+
+
+### Practicing Various Arithmetic Functions
+
+```{r}
+x+y
+```
+ 
+```{r}
+x-y
+```
+ 
+```{r}
+x*y
+```
+
+```{r}
+x/y
+```
+
+ 
+Adding the two objects is done per variable number, meaning the first number of the first object will be added to th first number of the second object. Similarly done with subtraction, multiplication and division.
+
+```{r}
+#install.packages("tidyverse")
+library("tidyverse")
+```
+
+```{r}
+gplot(mtcars, aes(x = factor(cyl))) +
+    geom_bar()
+```
