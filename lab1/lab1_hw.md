@@ -1,7 +1,7 @@
 ---
 title: "Lab 1 Homework"
 author: Eva Moncada
-date: "2024-01-11"
+date: "2024-01-16"
 output:
   html_document: 
     theme: spacelab
@@ -19,9 +19,11 @@ Completed.
 
 **2. What is the difference between R and RStudio? What is GitHub and why is it useful to programmers?**  
 
+R s the scripting language. R studio is where I will be coding since it is the IDE. It is the software used to write R code. Essentially, R studio is the GUI, which allows the user to interact with the software using the R scripting language. It is olike the notebook where one can write out the Englihs language to create sentences and meanings. GitHub is a space to upload and share data with other programmers. This allows various programmers to work on the same project and be able to keep track of each other's progress. For this class, it would also allow up to upload our homework.
 
+**3. Navigate to my [BIS15L](https://github.com/jmledford3115/BIS15LW2024_jledford) repository on GitHub. Notice that near the bottom there is a nice, clean description of the repository. You want this on your repository! It is built by making edits to the `README.md` file using the RMarkdown conventions. Edit your repository's `README.md` file so that you have a clean informative description, including your email address. Be creative! You don't need to just copy mine. There are lots of examples online.**  
 
-**3. Navigate to my [BIS15L](https://github.com/jmledford3115/BIS15LW2021_jledford) repository on GitHub. Notice that near the bottom there is a nice, clean description of the repository. You want this on your repository! It is built by making edits to the `README.md` file using the RMarkdown conventions. Edit your repository's `README.md` file so that you have a clean informative description, including your email address. Be creative! You don't need to just copy mine. There are lots of examples online.**  
+Completed.
 
 **4. Calculate the following expressions. Be sure to include each one in a separate code chunk.**  
 
@@ -42,11 +44,27 @@ Completed.
 ## [1] 8
 ```
 
-**5. Did any of the results in #4 surprise you? Write two programs that calculate each expression such that the result for the first example is 4 and the second example is 16.**    
+**5. Did any of the results in #4 surprise you? Write two programs that calculate each expression such that the result for the first example is 4 and the second example is 8.**   
+
+No surprises since I know that R follows the order of operations (i.e. PEMDAS).
 
 
+```r
+(5 - 3) * 2
+```
+
+```
+## [1] 4
+```
 
 
+```r
+(8 / 2) * 2 
+```
+
+```
+## [1] 8
+```
 
 **6. `Objects` in R are a way in which we can store data or operations. We will talk more about objects next week. For now, make a new object `pi` as 3.14159265359 by running the following code chunk. You should now see the object `pi` in the environment window in the top right.**  
 
@@ -57,6 +75,13 @@ pi <- 3.14159265359
 **7. Let's say we want to multiply `pi` by 2. Using the same arithmetic principles that we just learned, write a code chunk that performs this operation using the object we created.**  
 
 
+```r
+pi * 2
+```
+
+```
+## [1] 6.283185
+```
 
 **8. In order to get help with any command in R, just type a `?` in front the command of interest. Practice this by running the following code chunk.**  
 
@@ -71,9 +96,23 @@ x <- c(2, 8, 6, 6, 7, 4, 9, 9, 9, 10)
 ```
 
 
+```r
+mean (x)
+```
+
+```
+## [1] 7
+```
 
 **10. Repeat the procedure above, but this time calculate the median.**  
 
+```r
+median (x)
+```
+
+```
+## [1] 7.5
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.  
