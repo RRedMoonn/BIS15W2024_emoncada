@@ -8,6 +8,6 @@ I am a 5th year Neurobiology, Physiology and Behavior student at UC Davis. This 
 
 ## Contact Information
 
-Eva Moncada(enmoncada@ucdavis.edu)
+[Eva Moncada](enmoncada@ucdavis.edu)
 
 ## Thank you!
