@@ -162,6 +162,7 @@ all_harry_potter_matrix <- rbind(all_harry_potter_matrix, total_earnings)
 ```{r}
 all_harry_potter_matrix
 ```
+
 ```{r}
 non_us_earnings <- all_harry_potter_matrix [,2]
 ```
