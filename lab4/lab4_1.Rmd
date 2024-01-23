@@ -27,12 +27,19 @@ These data are from: Gaeta J., G. Sass, S. Carpenter. 2012. Biocomplexity at Nor
 ```{r}
 fish <- readr::read_csv("data/Gaeta_etal_CLC_data.csv")
 ```
+"readr" means you are being explicit about the package you are using. 
 
 ## Data Structure
 Once data have been uploaded, let's get an idea of its structure, contents, and dimensions.  
 ```{r}
-
+glimpse(fish)
 ```
+You can also o this as another summarizing option.
+
+```{r}
+summary(fish)
+```
+You get different info. You can categorical and numerical variables.
 
 ## Tidyverse
 The [tidyverse](www.tidyverse.org) is an "opinionated" collection of packages that make workflow in R easier. The packages operate more intuitively than base R commands and share a common organizational philosophy.  
@@ -52,14 +59,39 @@ We are only interested in lakeid and scalelength.
 select(fish, "lakeid", "scalelength")
 ```
 
+##practing
+get the names in the dataset
+```{r}
+names(fish)
+```
+
+to pull out only fish ID and length
+```{r}
+select(fish, "fish_id", "length")
+```
+if you were to flip the names, look at what happens
+```{r}
+select(fish, "length", "fish_id")
+```
+data is stil the same, but the columns are flipped.
+
+To get a new dataframe named fish subset with this selection.
+```{r}
+fish_subset <- select(fish, "length", "fish_id")
+```
+
+_____________
+
+How to Modify Select options
 To add a range of columns use `start_col:end_col`.
 ```{r}
 select(fish, fish_id:length)
 ```
+This fish_id:length function allows you to only choose columns within those columns. To do this with multiple sections and jump around the data: 
 
-The - operator is useful in select. It allows us to select everything except the specified variables.
+The - operator is useful in select. It allows us to select everything except the specified variables. Essentially, it takes away those variables.
 ```{r}
-select(fish, -fish_id, -annnumber, -length, -radii_length_mm)
+select(fish, "-fish_id", "-annnumber", "-length", "-radii_length_mm')
 ```
 
 For very large data frames with lots of variables, `select()` utilizes lots of different operators to make things easier. Let's say we are only interested in the variables that deal with length.
@@ -68,6 +100,7 @@ For very large data frames with lots of variables, `select()` utilizes lots of d
 names(fish)
 ```
 
+You can also pull out all of the variables that have someting about "length" included in them. This alows for those variables that are named the same to be easily filtered out. (i.e. if you were to name multiple objects as Experiment 1, Experiment 2, etc. so you are no wable to filter those out.)
 ```{r}
 select(fish, contains("length"))
 ```
@@ -80,13 +113,14 @@ select(fish, starts_with("radii"))
 Options to select columns based on a specific criteria include:  
 1. ends_with() = Select columns that end with a character string  
 2. contains() = Select columns that contain a character string  
-3. matches() = Select columns that match a regular expression  
+3. matches() = Select columns that match a regular expression  (sometimes abbreivated to "regex")
 4. one_of() = Select columns names that are from a group of names  
 
 ```{r}
 names(fish)
 ```
 
+Another permutation of the select command. This for example 
 ```{r}
 select(fish, ends_with("id"))
 ```
@@ -97,10 +131,11 @@ select(fish, contains("fish"))
 
 We won't cover regular expressions [regex](https://en.wikipedia.org/wiki/Regular_expression) in this class, but the following code is helpful when you know that a column contains a letter (in this case "a") followed by a subsequent string (in this case "er").  
 ```{r}
-select(fish, matches("a.+er"))
+select(fish, matches("a.+er")) #handy it of cde for the project
 ```
+This command above looks at the variable of interets. ex. the variable has the letter "a" and ands with an "er". Important for the more messy data. 
 
-You can also select columns based on the class of data.  
+You can also select columns based on the class of data.  This example pulls out all of the numerics.
 ```{r}
 glimpse(fish)
 ```
@@ -109,7 +144,9 @@ glimpse(fish)
 select_if(fish, is.numeric)
 ```
 
-To select all columns that are *not* a class of data, you need to add a `~`.
+To select all columns that are *not* a class of data, you need to add a `~` at the front.
+Select if, in the fish data, look in all cells and do not pull out the ones that are numeric across the whole dataframe. Look at all of the cells" That is what it is saying. The exclamation point means NOT. if you did not have it there, it would pull out the values that are numeric. 
+
 ```{r}
 select_if(fish, ~!is.numeric(.))
 ```
@@ -118,61 +155,98 @@ select_if(fish, ~!is.numeric(.))
 For this exercise we will use life history data `mammal_lifehistories_v2.csv` for mammals. The [data](http://esapubs.org/archive/ecol/E084/093/) are from:  
 **S. K. Morgan Ernest. 2003. Life history characteristics of placental non-volant mammals. Ecology 84:3402.**  
 
+Make sure the data is wihtin the quotes. DON"T FORGET TO ADD THE QUOTES!
 Load the data.  
 ```{r}
-
+mammal_lifehistories <- read.csv("data/mammal_lifehistories_v2.csv")
 ```
 
+Ony use getw() command when you do not know what the data looks like. 
 1. Use one or more of your favorite functions to assess the structure of the data.  
 ```{r}
-
+str(mammal_lifehistories)
 ```
 
 2. Are there any NAs? Are you sure? Try taking an average of `max. life` as a test.  
 ```{r}
-
+is.na(mammal_lifehistories)
 ```
 
+You an also do:
 ```{r}
-
+anyNA(mammal_lifehistories)
 ```
+This says there are no NAs in the data. 
 
+let's lok at. this:
 ```{r}
-
+summary(mammal_lifehistories)
 ```
+Notice how one of the masses say -999. This is unlikely. 
 
 3. What are the names of the columns in the `mammals` data?
 ```{r}
-
+names(mammal_lifehistories)
 ```
 
-4. Rename any columns that have capitol letters or punctuation issues.  
+4. Rename any columns that have capitol letters or punctuation issues. 
+
 ```{r}
-
+mammal_new<-rename(mammal_lifehistories, genus= "Genus", wean_mass= "wean.mass" , afr="AFR", max_life="max..life", litter_size="litter.size", litters_per_year="litters.year")
+names(mammal_new)
 ```
+
+```{r}
+mammal_new
+```
+
+
+DO NOT DO THIS:
+```{r}
+mammal_lifehistories <- data.frame(order, family, genus=Genus, species, mass, gestation, newborn, weaning, wean.mass, afr=AFR, max.life=max..life, litter_size=litter.size, litters_year=litters.year)
+```
+
+There are a couple issues with this. First, you dont need to use the data.frame () command. Becaus you already have a data frame. You canot make a data fram otu of a dataframe. Also, make sure you specify the path specifically using the getwd() command.
+
+Let's make a new dataframe name with all of the updates names.
+
+```{r}
+mammal_new <- mammal_lifehistories
+```
+
 
 5. We are only interested in the variables `genus`, `species`, and `mass`. Use `select()` to build a new dataframe `mass` focused on these variables.
 ```{r}
-
+mass <- select(mammal_new, "genus", "species", "mass")
 ```
 
 ```{r}
-
+select(mammal_new)
 ```
 
 6. What if we only wanted to exclude `order` and `family`? Use the `-` operator to make the code efficient.
 ```{r}
-
+select(mammal_new, -"order", -"family")
 ```
 
 7. Select the columns that include "mass" as part of the name.  
 ```{r}
-
+select(mammal_new, contains("mass"))
 ```
 
 8. Select all of the columns that are of class `character`.  
 ```{r}
+select_if(mammal_new, "~is.character(.)")
+```
 
+
+```{r}
+select_if(mammal_new, is.character)
+```
+
+Also works when you use just "select"
+```{r}
+select_if(mammal_new, is.character)
 ```
 
 ## Other
@@ -180,8 +254,26 @@ Here are two examples of code that are super helpful to have in your bag of tric
 
 Imported data frames often have a mix of lower and uppercase column names. Use `toupper()` or `tolower()` to fix this issue. I always try to use lowercase to keep things consistent.  
 ```{r}
+mammal <- select_all(mammal_lifehistories, tolower)
+```
+
+
+```{r}
+library(janitor)
+names(mammal)
+```
+
+
+```{r}
+clean_names(mammal)
+```
+
+This fixes everything for you.
+
+```{r}
 
 ```
+
 
 When naming columns, blank spaces are often added (don't do this, please). Here is a trick to remove these.  
 ```{r}

@@ -67,7 +67,7 @@ Let's use lowercase names when we create the data frame. We just changed to lowe
 ```{r}
 data.frame(sex=Sex, length=Length, weight_g=Weight)
 ```
-To make the hbids set have his frame: 
+To make the hbirds set have his frame: 
 ```{r}
 hbirds <- data.frame(sex=Sex, length=Length, weight_g=Weight)
 ```

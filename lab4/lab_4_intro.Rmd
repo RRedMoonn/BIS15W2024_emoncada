@@ -48,7 +48,7 @@ library("palmerpenguins")
 ```
 
 ```{r}
-penguins <- palmerpenguins""
+penguins <- palmerpenguins
 ```
 
 3. What are the names of the variables in the `penguins` dataset?
