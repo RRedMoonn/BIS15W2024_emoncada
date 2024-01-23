@@ -19,6 +19,12 @@ library("jpeg")
 7. Copy the files for today's lab from the class repository and paste them into **your** repository.  
 8. Open today's lab in RStudio.  
 
+##Do this to the at-home computer:
+1. Go to Tools -> check for package updates-should say "All packages are up to date". If not, update
+
+2. In environment panel (well, actually do it in the console at the bottom left quadrant), type install.packages("palmerpenguins")
+
+
 ## Review from last time
 ### *With a partner, discuss the following questions*
 1. What is a data frame and how is it different than a data matrix?  
@@ -28,6 +34,24 @@ library("jpeg")
 ## Warm-up
 1. In a new R Markdown document, load the tidyverse and a package called `palmerpenguins`.
 2. What are the dimensions of the dataset `penguins`?
+
+```{r}
+library("tidyverse")
+```
+
+```{r}
+install.packages("palmerpenguins")
+```
+
+```{r}
+library("palmerpenguins")
+```
+
+```{r}
+penguins <- palmerpenguins""
+```
+
 3. What are the names of the variables in the `penguins` dataset?
+
 4. How many individuals were sampled on each island in the `penguins` dataset?
 5. What is the mean body mass for all individuals in the `penguins` dataset?

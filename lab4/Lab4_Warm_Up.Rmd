@@ -1,0 +1,69 @@
+---
+title: "lab_4_warm_up"
+author: "Eva Moncada"
+date: "2024-01-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Load the libraries
+You need tidyverse and palmer penguins. load bot using library().
+ 
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+ 
+```{r}
+penguins
+```
+ 
+## 2. What are the dimensions of the "penguins" dataset?
+ 
+```{r}
+dim(penguins)
+```
+ 
+## 3. hat are the names of the variables? Variables are the COLUMNS of the data set. 
+ 
+```{r}
+names(penguins)
+```
+
+You can also do:
+
+```{r}
+glimpse(penguins)
+```
+
+## 4. How many individuals were sampled on each island?
+We are making the data set an object. So we can now print out the data to see it.
+```{r}
+penguins <- penguins
+```
+
+```{r}
+penguins
+```
+
+Now we can use the function Table(). The $ sign allows you to choose a variable within that dataset. 
+
+```{r}
+table(penguins$island)
+```
+Or you can do:
+```{r}
+summary(penguins$island)
+```
+
+```{r}
+mean(penguins$body_mass_g)
+```
+
+Notice hw it responds with NA. This is because there are some NA'sin the data. so we use na.rm=T t repve the NAs/
+```{r}
+mean(penguins$body_mass_g, na.rm=T)
+```
