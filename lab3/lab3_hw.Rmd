@@ -28,6 +28,7 @@ get("msleep")
 2. Store these data into a new data frame `sleep`.  
 ```{r}
 sleep<-data.frame(msleep)
+sleep
 ```
 
 3. What are the dimensions of this data frame (variables and observations)? How do you know? Please show the *code* that you used to determine this below.  
@@ -78,21 +79,24 @@ mean(large_animals_bodyweight$bodywt, na.rm = T)
 9. Using a similar approach as above, do large or small animals sleep longer on average?  
 
 ```{r}
-small_animals_sleep <- filter(sleep, bodywt<=19, sleep_total)
-large_animals_sleep <- filter(sleep, bodywt >=200, sleep_total)
+mean(small_animals_bodyweight$sleep_total)
 ```
 
 ```{r}
-mean(small_animals_sleep$sleep_total, na.rm = T)
-mean(large_animals_sleep$sleep_total, na.rm = T)
+mean(large_animals_bodyweight$sleep_total)
 ```
-
+ 
+ The smaller animals sleep longer on average with a mean of 11.78. 
+ 
 10. Which animal is the sleepiest among the entire dataframe?
 ```{r}
-max(sleep$total_sleep)
-filter(sleep, sleep_total==19.9)
+max(sleep$sleep_total)
 ```
-
+```{r}
+sleep_times<-filter(sleep, sleep_total==19.9)
+sleep_times
+```
+The little brown bat is the sleepiest among the entire dataframe.
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
