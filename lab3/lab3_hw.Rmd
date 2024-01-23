@@ -62,23 +62,29 @@ There are 32 herbivores present in the data.
 
 7. We are interested in two groups; small and large mammals. Let's define small as less than or equal to 19kg body weight and large as greater than or equal to 200kg body weight. Make two new dataframes (large and small) based on these parameters.
 ```{r}
-small_animals <- filter(sleep, bodywt<=19)
-large_animals <- filter(sleep, bodywt >=200)
+small_animals_bodyweight <- filter(sleep, bodywt<=19)
+large_animals_bodyweight <- filter(sleep, bodywt >=200)
 ```
-
+ 
 8. What is the mean weight for both the small and large mammals?
 ```{r}
-mean_small_animals <-mean(small_animals, na.rm = T)
+mean(small_animals_bodyweight$bodywt, na.rm = T)
 ```
 
 ```{r}
-mean(large_animals, na.rm = T)
+mean(large_animals_bodyweight$bodywt, na.rm = T)
 ```
 
 9. Using a similar approach as above, do large or small animals sleep longer on average?  
 
 ```{r}
+small_animals_sleep <- filter(sleep, bodywt<=19, sleep_total)
+large_animals_sleep <- filter(sleep, bodywt >=200, sleep_total)
+```
 
+```{r}
+mean(small_animals_sleep$sleep_total, na.rm = T)
+mean(large_animals_sleep$sleep_total, na.rm = T)
 ```
 
 10. Which animal is the sleepiest among the entire dataframe?
