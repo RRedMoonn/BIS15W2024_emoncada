@@ -65,7 +65,7 @@ homerange$taxon
 ```
 
 ```{r}
-homerange$order
+filter(homerange, taxon=="")
 ```
 
 **4. What taxa are represented in the `homerange` data frame? Make a new data frame `taxa` that is restricted to taxon, common name, class, order, family, genus, species.**  
@@ -120,8 +120,15 @@ mean(herbivores$mean_hra_m2, na.rm =T)
 
 
 **9. Make a new dataframe `owls` that is limited to the mean mass, log10 mass, family, genus, and species of owls in the database. Which is the smallest owl? What is its common name? Do a little bit of searching online to see what you can learn about this species and provide a link below** 
+
 ```{r}
-owls <- filter(homerange, taxon=="birds" & order="owlmean_mass_g", "log10_mass", "family", "genus", "species")
+homerange$order
+```
+
+```{r}
+homerange %>% 
+  select(taxon, order, mean_mass_g, log10_mass, family, genus, species) %>% 
+  filter(taxon="birds", order = "strigiformes")
 ```
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
