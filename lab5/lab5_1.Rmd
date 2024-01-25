@@ -15,9 +15,11 @@ output:
 1. Use `filter()` to extract variables of interest.  
 2. Use `filter()` to extract variables of interest under multiple conditions.  
 
+MAKE SURE YOU ADD THE JANITOR LIBRARY TO CLEAN UP THE NAMES OF THE DATA
 ## Load the tidyverse
 ```{r message=FALSE, warning=FALSE}
 library("tidyverse")
+library("janitor")
 ```
 
 ## Load the data
@@ -40,7 +42,7 @@ mammals <- rename(mammals, genus="Genus", wean_mass="wean mass", max_life= "max.
 
 Do you remember the easier way?
 ```{r}
-
+## add library("janitor" above under the library("tidyverse") code.
 ```
 
 ## Review
@@ -56,8 +58,10 @@ levels(fish$lakeid)
 ```
 
 Now we can pull out any state of interest.  
-```{r}
 
+ex. if you were interested only in variable LJ
+```{r}
+filter(fish, lakeid=="LJ")
 ```
 
 ## Using `filter()` on multiple conditions
@@ -66,7 +70,7 @@ You can also use `filter()` to extract data based on multiple conditions. Below 
 filter(fish, lakeid == "AL" & length > 350)
 ```
 
-Notice that the `|` operator generates a different result.
+Notice that the `|` operator generates a different result.his vertical line stands for "or", so it would give you both the lakeid from AL as well as all of the length that is less than 350, regardless of the lakeid.
 ```{r}
 filter(fish, lakeid == "AL" | length > 350)
 ```
@@ -85,17 +89,49 @@ filter(fish, length > 400, (scalelength > 11 | radii_length_mm > 8))
 ## Practice  
 1.  From the `mammals` data, filter all members of the family Bovidae with a mass greater than 450000.
 ```{r}
-
+bovidae <- filter(mammals, family == "Bovidae", mass > 450000)
+bovidae
 ```
 
 2. From the `mammals` data, build a data frame that compares `mass`, `gestation`, and `newborn` among the primate genera `Lophocebus`, `Erythrocebus`, and `Macaca`. Among these genera, which species has the smallest `newborn` mass?
 ```{r}
-
+compared_data <- c(mammals$mass, mammals$gestation, mammals$newborn, mammals$genus=="Lophocebus","Erythrocebus","Macaca")
+compared_data
 ```
 
 ```{r}
-
+min(compared_data)
 ```
+ 
+ 
+He did:
+
+```{r}
+select(mammals,"order", "genus", "mass", "gestation", "newborn")
+```
+
+He only wants to pull out the primates.
+
+```{r}
+primates <- filter(mammals, order =="Primates")
+```
+
+Some may do this:
+
+```{r}
+mammals2 <- select(mammals,"order", "genus", "mass", "gestation", "newborn")
+```
+
+
+```{r}
+mammals3 <- filter (mammals2, order == "Primates")
+```
+
+```{r}
+mammals4 <- filter(mammals3, genus%in% c("Locphocebus", "Erythocebus", "Macaca"))
+```
+
+But this is a lot of work. Let's do soemthing more simple, which we  will learn in lab5_2.
 
 ## That's it! Let's take a break and then move on to part 2!  
 
