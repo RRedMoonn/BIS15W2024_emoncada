@@ -3,12 +3,10 @@ title: "Lab 4 Homework"
 author: "Eva Moncada"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
-    toc: no
+    keep_md: true
 ---
-
-ONLY DO HOMEWORK #1-6 BY THURSDAY
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -70,9 +68,12 @@ homerange$order
 **4. What taxa are represented in the `homerange` data frame? Make a new data frame `taxa` that is restricted to taxon, common name, class, order, family, genus, species.**  
 
 ```{r}
-homerange <- rename(common_name="common.name", primary_method = "primarymethod", mean_mass_g = "mean.mass.g", log10_mass = "log10.mass", alternative_mass_reference = "alternative.mass.reference", mean_hra_m2="mean.hra.m2", log10_hra="log10.hra", hra_reference ="hra.reference", trophic_guild = "trophic.guild", prey_mass ="preymass", log10_prey_mass = "log10.preymass", prey_size_reference = "prey.size.reference")
+colnames(homerange) <- c("taxon", "common_name", "class", "order", "family", "genus", "species", "primary_method", "N", "mean_mass_g", "log10_mass", "alternative_mass_reference", "mean_hra_m2", "log10_hra", "hra_reference", "realm", "thermoregulation", "locomotion", "trophic_guild", "dimension", "prey_mass", "log10_prey_mass", "PPMR", "prey_size_reference")
 ```
 
+```{r}
+names(homerange)
+```
 
 ```{r}
 taxa <- homerange[, c("taxon", "common_name", "class", "order", "family", "genus", "species")]
@@ -81,12 +82,12 @@ head(taxa)
 
 **5. The variable `taxon` identifies the common name groups of the species represented in `homerange`. Make a table the shows the counts for each of these `taxon`.**  
 ```{r}
-table(homerange)
-``
+table(homerange$taxon)
+```
 
 **6. The species in `homerange` are also classified into trophic guilds. How many species are represented in each trophic guild.**  
 ```{r}
-table(homerange$trophic.guild)
+table(homerange$trophic_guild)
 ```
 
 **7. Make two new data frames, one which is restricted to carnivores and another that is restricted to herbivores.**  
