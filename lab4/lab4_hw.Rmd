@@ -33,19 +33,23 @@ Data: http://datadryad.org/resource/doi:10.5061/dryad.q5j65/1
 
 **1. Load the data into a new object called `homerange`.**
 ```{r}
-homerange <- 
+homerange <- readr::read_csv ("data/Tamburelloetal_HomeRangeDatabase.csv")
+```
+```{r}
+homerange
 ```
 
 **2. Explore the data. Show the dimensions, column names, classes for each variable, and a statistical summary. Keep these as separate code chunks.**  
 ```{r}
 dim(homerange)
 ```
+
 ```{r}
 names(homerange)
 ```
 
 ```{r}
-homerange$classes
+homerange$class
 ```
 
 ```{r}
@@ -54,24 +58,35 @@ summary(homerange)
 
 **3. Change the class of the variables `taxon` and `order` to factors and display their levels.**  
 ```{r}
-
+homerange$taxon <- as.factor(homerange$taxon)
+homerange$order <- as.factor(homerange$order)
 ```
 
+```{r}
+homerange$taxon
+homerange$order
 ```
 
 **4. What taxa are represented in the `homerange` data frame? Make a new data frame `taxa` that is restricted to taxon, common name, class, order, family, genus, species.**  
-```{r}
 
+```{r}
+homerange <- rename(common_name="common.name", primary_method = "primarymethod", mean_mass_g = "mean.mass.g", log10_mass = "log10.mass", alternative_mass_reference = "alternative.mass.reference", mean_hra_m2="mean.hra.m2", log10_hra="log10.hra", hra_reference ="hra.reference", trophic_guild = "trophic.guild", prey_mass ="preymass", log10_prey_mass = "log10.preymass", prey_size_reference = "prey.size.reference")
+```
+
+
+```{r}
+taxa <- homerange[, c("taxon", "common_name", "class", "order", "family", "genus", "species")]
+head(taxa)
 ```
 
 **5. The variable `taxon` identifies the common name groups of the species represented in `homerange`. Make a table the shows the counts for each of these `taxon`.**  
 ```{r}
-
-```
+table(homerange)
+``
 
 **6. The species in `homerange` are also classified into trophic guilds. How many species are represented in each trophic guild.**  
 ```{r}
-
+table(homerange$trophic.guild)
 ```
 
 **7. Make two new data frames, one which is restricted to carnivores and another that is restricted to herbivores.**  
