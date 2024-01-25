@@ -178,7 +178,7 @@ anyNA(mammal_lifehistories)
 ```
 This says there are no NAs in the data. 
 
-let's lok at. this:
+let's look at. this:
 ```{r}
 summary(mammal_lifehistories)
 ```
