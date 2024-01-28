@@ -128,12 +128,14 @@ homerange$order
 ```{r}
 homerange %>% 
   select(taxon, order, mean_mass_g, log10_mass, family, genus, species) %>% 
-  filter(taxon="birds", order = "strigiformes")
+  filter(taxon=="birds", order== "strigiformes")
 ```
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 ```{r}
-max(owls$homerange)
+homerange %>% 
+  arrange(desc(mean_hra_m2)) %>% 
+  filter(class == "aves")
 ```
 
 ## Push your final code to GitHub!
