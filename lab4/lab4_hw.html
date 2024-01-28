@@ -11,7 +11,7 @@
 
 <meta name="author" content="Eva Moncada" />
 
-<meta name="date" content="2024-01-25" />
+<meta name="date" content="2024-01-27" />
 
 <title>Lab 4 Homework</title>
 
@@ -376,12 +376,11 @@ display: none;
 
 <h1 class="title toc-ignore">Lab 4 Homework</h1>
 <h4 class="author">Eva Moncada</h4>
-<h4 class="date">2024-01-25</h4>
+<h4 class="date">2024-01-27</h4>
 
 </div>
 
 
-<p>ONLY DO HOMEWORK #1-6 BY THURSDAY</p>
 <div id="instructions" class="section level2">
 <h2>Instructions</h2>
 <p>Answer the following questions and complete the exercises in
@@ -775,6 +774,80 @@ homerange$order &lt;- as.factor(homerange$order)</code></pre>
 ## [561] tortoises     tortoises     tortoises     tortoises     tortoises    
 ## [566] tortoises     tortoises     tortoises     turtles      
 ## 9 Levels: birds lake fishes lizards mammals marine fishes ... turtles</code></pre>
+<pre class="r"><code>filter(homerange, taxon==&quot;&quot;)</code></pre>
+<pre><code>## # A tibble: 0 × 24
+## # ℹ 24 variables: taxon &lt;fct&gt;, common.name &lt;chr&gt;, class &lt;chr&gt;, order &lt;fct&gt;,
+## #   family &lt;chr&gt;, genus &lt;chr&gt;, species &lt;chr&gt;, primarymethod &lt;chr&gt;, N &lt;chr&gt;,
+## #   mean.mass.g &lt;dbl&gt;, log10.mass &lt;dbl&gt;, alternative.mass.reference &lt;chr&gt;,
+## #   mean.hra.m2 &lt;dbl&gt;, log10.hra &lt;dbl&gt;, hra.reference &lt;chr&gt;, realm &lt;chr&gt;,
+## #   thermoregulation &lt;chr&gt;, locomotion &lt;chr&gt;, trophic.guild &lt;chr&gt;,
+## #   dimension &lt;dbl&gt;, preymass &lt;dbl&gt;, log10.preymass &lt;dbl&gt;, PPMR &lt;dbl&gt;,
+## #   prey.size.reference &lt;chr&gt;</code></pre>
+<p><strong>4. What taxa are represented in the <code>homerange</code>
+data frame? Make a new data frame <code>taxa</code> that is restricted
+to taxon, common name, class, order, family, genus,
+species.</strong></p>
+<pre class="r"><code>colnames(homerange) &lt;- c(&quot;taxon&quot;, &quot;common_name&quot;, &quot;class&quot;, &quot;order&quot;, &quot;family&quot;, &quot;genus&quot;, &quot;species&quot;, &quot;primary_method&quot;, &quot;N&quot;, &quot;mean_mass_g&quot;, &quot;log10_mass&quot;, &quot;alternative_mass_reference&quot;, &quot;mean_hra_m2&quot;, &quot;log10_hra&quot;, &quot;hra_reference&quot;, &quot;realm&quot;, &quot;thermoregulation&quot;, &quot;locomotion&quot;, &quot;trophic_guild&quot;, &quot;dimension&quot;, &quot;prey_mass&quot;, &quot;log10_prey_mass&quot;, &quot;PPMR&quot;, &quot;prey_size_reference&quot;)</code></pre>
+<pre class="r"><code>names(homerange)</code></pre>
+<pre><code>##  [1] &quot;taxon&quot;                      &quot;common_name&quot;               
+##  [3] &quot;class&quot;                      &quot;order&quot;                     
+##  [5] &quot;family&quot;                     &quot;genus&quot;                     
+##  [7] &quot;species&quot;                    &quot;primary_method&quot;            
+##  [9] &quot;N&quot;                          &quot;mean_mass_g&quot;               
+## [11] &quot;log10_mass&quot;                 &quot;alternative_mass_reference&quot;
+## [13] &quot;mean_hra_m2&quot;                &quot;log10_hra&quot;                 
+## [15] &quot;hra_reference&quot;              &quot;realm&quot;                     
+## [17] &quot;thermoregulation&quot;           &quot;locomotion&quot;                
+## [19] &quot;trophic_guild&quot;              &quot;dimension&quot;                 
+## [21] &quot;prey_mass&quot;                  &quot;log10_prey_mass&quot;           
+## [23] &quot;PPMR&quot;                       &quot;prey_size_reference&quot;</code></pre>
+<pre class="r"><code>taxa &lt;- homerange[, c(&quot;taxon&quot;, &quot;common_name&quot;, &quot;class&quot;, &quot;order&quot;, &quot;family&quot;, &quot;genus&quot;, &quot;species&quot;)]
+head(taxa)</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##   taxon        common_name         class          order     family genus species
+##   &lt;fct&gt;        &lt;chr&gt;               &lt;chr&gt;          &lt;fct&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1 lake fishes  american eel        actinopterygii anguilli… angui… angu… rostra…
+## 2 river fishes blacktail redhorse  actinopterygii cyprinif… catos… moxo… poecil…
+## 3 river fishes central stoneroller actinopterygii cyprinif… cypri… camp… anomal…
+## 4 river fishes rosyside dace       actinopterygii cyprinif… cypri… clin… fundul…
+## 5 river fishes longnose dace       actinopterygii cyprinif… cypri… rhin… catara…
+## 6 river fishes muskellunge         actinopterygii esocifor… esoci… esox  masqui…</code></pre>
+<p><strong>5. The variable <code>taxon</code> identifies the common name
+groups of the species represented in <code>homerange</code>. Make a
+table the shows the counts for each of these
+<code>taxon</code>.</strong></p>
+<pre class="r"><code>table(homerange$taxon)</code></pre>
+<pre><code>## 
+##         birds   lake fishes       lizards       mammals marine fishes 
+##           140             9            11           238            90 
+##  river fishes        snakes     tortoises       turtles 
+##            14            41            12            14</code></pre>
+<p><strong>6. The species in <code>homerange</code> are also classified
+into trophic guilds. How many species are represented in each trophic
+guild.</strong></p>
+<pre class="r"><code>table(homerange$trophic_guild)</code></pre>
+<pre><code>## 
+## carnivore herbivore 
+##       342       227</code></pre>
+<p><strong>7. Make two new data frames, one which is restricted to
+carnivores and another that is restricted to herbivores.</strong></p>
+<pre class="r"><code>carnivores &lt;- filter(homerange, trophic_guild == &quot;carnivore&quot;)
+herbivores &lt;- filter(homerange, trophic_guild == &quot;herbivore&quot;)</code></pre>
+<p><strong>8. Do herbivores or carnivores have, on average, a larger
+<code>mean.hra.m2</code>? Remove any NAs from the data.</strong></p>
+<pre class="r"><code>anyNA(carnivores$mean_hra_m2)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>mean(carnivores$mean_hra_m2, na.rm =T)</code></pre>
+<pre><code>## [1] 13039918</code></pre>
+<pre class="r"><code>anyNA(herbivores$mean_hra_m2)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>mean(herbivores$mean_hra_m2, na.rm =T)</code></pre>
+<pre><code>## [1] 34137012</code></pre>
+<p><strong>9. Make a new dataframe <code>owls</code> that is limited to
+the mean mass, log10 mass, family, genus, and species of owls in the
+database. Which is the smallest owl? What is its common name? Do a
+little bit of searching online to see what you can learn about this
+species and provide a link below</strong></p>
 <pre class="r"><code>homerange$order</code></pre>
 <pre><code>##   [1] anguilliformes        cypriniformes         cypriniformes        
 ##   [4] cypriniformes         cypriniformes         esociformes          
@@ -967,64 +1040,46 @@ homerange$order &lt;- as.factor(homerange$order)</code></pre>
 ## [565] testudines            testudines            testudines           
 ## [568] testudines            testudines           
 ## 51 Levels: accipitriformes afrosoricida anguilliformes ... tetraodontiformes\xa0</code></pre>
-<p><strong>4. What taxa are represented in the <code>homerange</code>
-data frame? Make a new data frame <code>taxa</code> that is restricted
-to taxon, common name, class, order, family, genus,
-species.</strong></p>
-<pre class="r"><code>colnames(homerange) &lt;- c(&quot;taxon&quot;, &quot;common_name&quot;, &quot;class&quot;, &quot;order&quot;, &quot;family&quot;, &quot;genus&quot;, &quot;species&quot;, &quot;primary_method&quot;, &quot;N&quot;, &quot;mean_mass_g&quot;, &quot;log10_mass&quot;, &quot;alternative_mass_reference&quot;, &quot;mean_hra_m2&quot;, &quot;log10_hra&quot;, &quot;hra_reference&quot;, &quot;realm&quot;, &quot;thermoregulation&quot;, &quot;locomotion&quot;, &quot;trophic_guild&quot;, &quot;dimension&quot;, &quot;prey_mass&quot;, &quot;log10_prey_mass&quot;, &quot;PPMR&quot;, &quot;prey_size_reference&quot;)</code></pre>
-<pre class="r"><code>names(homerange)</code></pre>
-<pre><code>##  [1] &quot;taxon&quot;                      &quot;common_name&quot;               
-##  [3] &quot;class&quot;                      &quot;order&quot;                     
-##  [5] &quot;family&quot;                     &quot;genus&quot;                     
-##  [7] &quot;species&quot;                    &quot;primary_method&quot;            
-##  [9] &quot;N&quot;                          &quot;mean_mass_g&quot;               
-## [11] &quot;log10_mass&quot;                 &quot;alternative_mass_reference&quot;
-## [13] &quot;mean_hra_m2&quot;                &quot;log10_hra&quot;                 
-## [15] &quot;hra_reference&quot;              &quot;realm&quot;                     
-## [17] &quot;thermoregulation&quot;           &quot;locomotion&quot;                
-## [19] &quot;trophic_guild&quot;              &quot;dimension&quot;                 
-## [21] &quot;prey_mass&quot;                  &quot;log10_prey_mass&quot;           
-## [23] &quot;PPMR&quot;                       &quot;prey_size_reference&quot;</code></pre>
-<pre class="r"><code>taxa &lt;- homerange[, c(&quot;taxon&quot;, &quot;common_name&quot;, &quot;class&quot;, &quot;order&quot;, &quot;family&quot;, &quot;genus&quot;, &quot;species&quot;)]
-head(taxa)</code></pre>
-<pre><code>## # A tibble: 6 × 7
-##   taxon        common_name         class          order     family genus species
-##   &lt;fct&gt;        &lt;chr&gt;               &lt;chr&gt;          &lt;fct&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
-## 1 lake fishes  american eel        actinopterygii anguilli… angui… angu… rostra…
-## 2 river fishes blacktail redhorse  actinopterygii cyprinif… catos… moxo… poecil…
-## 3 river fishes central stoneroller actinopterygii cyprinif… cypri… camp… anomal…
-## 4 river fishes rosyside dace       actinopterygii cyprinif… cypri… clin… fundul…
-## 5 river fishes longnose dace       actinopterygii cyprinif… cypri… rhin… catara…
-## 6 river fishes muskellunge         actinopterygii esocifor… esoci… esox  masqui…</code></pre>
-<p><strong>5. The variable <code>taxon</code> identifies the common name
-groups of the species represented in <code>homerange</code>. Make a
-table the shows the counts for each of these
-<code>taxon</code>.</strong></p>
-<pre class="r"><code>table(homerange$taxon)</code></pre>
-<pre><code>## 
-##         birds   lake fishes       lizards       mammals marine fishes 
-##           140             9            11           238            90 
-##  river fishes        snakes     tortoises       turtles 
-##            14            41            12            14</code></pre>
-<p><strong>6. The species in <code>homerange</code> are also classified
-into trophic guilds. How many species are represented in each trophic
-guild.</strong></p>
-<pre class="r"><code>table(homerange$trophic_guild)</code></pre>
-<pre><code>## 
-## carnivore herbivore 
-##       342       227</code></pre>
-<p><strong>7. Make two new data frames, one which is restricted to
-carnivores and another that is restricted to herbivores.</strong></p>
-<p><strong>8. Do herbivores or carnivores have, on average, a larger
-<code>mean.hra.m2</code>? Remove any NAs from the data.</strong></p>
-<p><strong>9. Make a new dataframe <code>owls</code> that is limited to
-the mean mass, log10 mass, family, genus, and species of owls in the
-database. Which is the smallest owl? What is its common name? Do a
-little bit of searching online to see what you can learn about this
-species and provide a link below</strong></p>
+<pre class="r"><code>homerange %&gt;% 
+  select(taxon, order, mean_mass_g, log10_mass, family, genus, species) %&gt;% 
+  filter(taxon==&quot;birds&quot;, order== &quot;strigiformes&quot;)</code></pre>
+<pre><code>## # A tibble: 9 × 7
+##   taxon order        mean_mass_g log10_mass family    genus      species    
+##   &lt;fct&gt; &lt;fct&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;      
+## 1 birds strigiformes       119         2.08 strigidae aegolius   funereus   
+## 2 birds strigiformes       252         2.40 strigidae asio       otus       
+## 3 birds strigiformes       156.        2.19 strigidae athene     noctua     
+## 4 birds strigiformes      2191         3.34 strigidae bubo       bubo       
+## 5 birds strigiformes      1510         3.18 strigidae bubo       virginianus
+## 6 birds strigiformes        61.3       1.79 strigidae glaucidium passerinum 
+## 7 birds strigiformes      1920         3.28 strigidae nyctea     scandiaca  
+## 8 birds strigiformes       519         2.72 strigidae strix      aluco      
+## 9 birds strigiformes       285         2.45 tytonidae tyto       alba</code></pre>
 <p><strong>10. As measured by the data, which bird species has the
 largest homerange? Show all of your work, please. Look this species up
 online and tell me about it!</strong>.</p>
+<pre class="r"><code>homerange %&gt;% 
+  arrange(desc(mean_hra_m2)) %&gt;% 
+  filter(class == &quot;aves&quot;)</code></pre>
+<pre><code>## # A tibble: 140 × 24
+##    taxon common_name       class order family genus species primary_method N    
+##    &lt;fct&gt; &lt;chr&gt;             &lt;chr&gt; &lt;fct&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;
+##  1 birds caracara          aves  falc… falco… cara… cheriw… telemetry      26   
+##  2 birds Montagu&#39;s harrier aves  falc… accip… circ… pygarg… telemetry*     &lt;NA&gt; 
+##  3 birds peregrine falcon  aves  falc… falco… falco peregr… telemetry*     &lt;NA&gt; 
+##  4 birds booted eagle      aves  acci… accip… hier… pennat… telemetry      4    
+##  5 birds ostrich           aves  stru… strut… stru… camelus telemetry      1    
+##  6 birds short-toed snake… aves  acci… accip… circ… gallic… telemetry*     &lt;NA&gt; 
+##  7 birds European turtle … aves  colu… colum… stre… turtur  telemetry*     &lt;NA&gt; 
+##  8 birds Egyptian vulture  aves  acci… accip… neop… percno… telemetry*     &lt;NA&gt; 
+##  9 birds common buzzard    aves  acci… accip… buteo buteo   telemetry*     &lt;NA&gt; 
+## 10 birds lanner falcon     aves  falc… falco… falco biarmi… telemetry*     &lt;NA&gt; 
+## # ℹ 130 more rows
+## # ℹ 15 more variables: mean_mass_g &lt;dbl&gt;, log10_mass &lt;dbl&gt;,
+## #   alternative_mass_reference &lt;chr&gt;, mean_hra_m2 &lt;dbl&gt;, log10_hra &lt;dbl&gt;,
+## #   hra_reference &lt;chr&gt;, realm &lt;chr&gt;, thermoregulation &lt;chr&gt;, locomotion &lt;chr&gt;,
+## #   trophic_guild &lt;chr&gt;, dimension &lt;dbl&gt;, prey_mass &lt;dbl&gt;,
+## #   log10_prey_mass &lt;dbl&gt;, PPMR &lt;dbl&gt;, prey_size_reference &lt;chr&gt;</code></pre>
 </div>
 <div id="push-your-final-code-to-github" class="section level2">
 <h2>Push your final code to GitHub!</h2>
