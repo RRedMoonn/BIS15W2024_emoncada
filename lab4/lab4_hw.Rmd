@@ -64,19 +64,15 @@ homerange$order <- as.factor(homerange$order)
 homerange$taxon
 ```
 
-```{r}
-filter(homerange, taxon=="")
-```
 
 **4. What taxa are represented in the `homerange` data frame? Make a new data frame `taxa` that is restricted to taxon, common name, class, order, family, genus, species.**  
+
+Changing some of the names since they incorrectly written. 
 
 ```{r}
 colnames(homerange) <- c("taxon", "common_name", "class", "order", "family", "genus", "species", "primary_method", "N", "mean_mass_g", "log10_mass", "alternative_mass_reference", "mean_hra_m2", "log10_hra", "hra_reference", "realm", "thermoregulation", "locomotion", "trophic_guild", "dimension", "prey_mass", "log10_prey_mass", "PPMR", "prey_size_reference")
 ```
 
-```{r}
-names(homerange)
-```
 
 ```{r}
 taxa <- homerange[, c("taxon", "common_name", "class", "order", "family", "genus", "species")]
@@ -128,8 +124,12 @@ homerange$order
 ```{r}
 homerange %>% 
   select(taxon, order, mean_mass_g, log10_mass, family, genus, species) %>% 
-  filter(taxon=="birds", order== "strigiformes")
+  filter(taxon=="birds", order== "strigiformes") %>% 
+  arrange(desc(mean_mass_g))
 ```
+The smallest owl is species passerinum from the glaucidium, genus family (Glaucidium passerinum). This  owl is the smallest in Europe with a wingspan of 32-39 centimeters and weight of only 47-83 grams,which is equivalent to around 0.10-0.18 pounds. This owl is also found in areas of Asia including Mongolia and China. This species lives in coniferous forests and mountainous areas. These owls do not migrate and hence hoard their carnivorous foods in the autumn to be consumed in the winter. Their carnivorous diet primarily consists of small mammals, small birds, lizards, fish and insects. 
+
+Source: https://animalia.bio/eurasian-pygmy-owl?letter=e
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 ```{r}
@@ -137,6 +137,9 @@ homerange %>%
   arrange(desc(mean_hra_m2)) %>% 
   filter(class == "aves")
 ```
+The cheriway species, or Caracara, has the largest homerange. The Crested Caracara are omnivorous falcons that primarily live in Central and Southern Americas, along with some southern states in the United States. These birds are black and white with yellow-orange skin on their legs and around their bills.They are medium sized with their wingspan of 122-125 centimeters and lengths of 49-58 centimeters. This species is the only falcon that build their own nests while other falcons use old nests created by other species. 
+
+Source: https://www.allaboutbirds.org/guide/Crested_Caracara/overview 
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   

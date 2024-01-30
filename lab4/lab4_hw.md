@@ -1,7 +1,7 @@
 ---
 title: "Lab 4 Homework"
 author: "Eva Moncada"
-date: "2024-01-27"
+date: "2024-01-30"
 output:
   html_document: 
     theme: spacelab
@@ -447,47 +447,15 @@ homerange$taxon
 ```
 
 
-```r
-filter(homerange, taxon=="")
-```
-
-```
-## # A tibble: 0 × 24
-## # ℹ 24 variables: taxon <fct>, common.name <chr>, class <chr>, order <fct>,
-## #   family <chr>, genus <chr>, species <chr>, primarymethod <chr>, N <chr>,
-## #   mean.mass.g <dbl>, log10.mass <dbl>, alternative.mass.reference <chr>,
-## #   mean.hra.m2 <dbl>, log10.hra <dbl>, hra.reference <chr>, realm <chr>,
-## #   thermoregulation <chr>, locomotion <chr>, trophic.guild <chr>,
-## #   dimension <dbl>, preymass <dbl>, log10.preymass <dbl>, PPMR <dbl>,
-## #   prey.size.reference <chr>
-```
-
 **4. What taxa are represented in the `homerange` data frame? Make a new data frame `taxa` that is restricted to taxon, common name, class, order, family, genus, species.**  
+
+#Changing some of the names since they incorrectly written. 
 
 
 ```r
 colnames(homerange) <- c("taxon", "common_name", "class", "order", "family", "genus", "species", "primary_method", "N", "mean_mass_g", "log10_mass", "alternative_mass_reference", "mean_hra_m2", "log10_hra", "hra_reference", "realm", "thermoregulation", "locomotion", "trophic_guild", "dimension", "prey_mass", "log10_prey_mass", "PPMR", "prey_size_reference")
 ```
 
-
-```r
-names(homerange)
-```
-
-```
-##  [1] "taxon"                      "common_name"               
-##  [3] "class"                      "order"                     
-##  [5] "family"                     "genus"                     
-##  [7] "species"                    "primary_method"            
-##  [9] "N"                          "mean_mass_g"               
-## [11] "log10_mass"                 "alternative_mass_reference"
-## [13] "mean_hra_m2"                "log10_hra"                 
-## [15] "hra_reference"              "realm"                     
-## [17] "thermoregulation"           "locomotion"                
-## [19] "trophic_guild"              "dimension"                 
-## [21] "prey_mass"                  "log10_prey_mass"           
-## [23] "PPMR"                       "prey_size_reference"
-```
 
 
 ```r
@@ -785,23 +753,27 @@ homerange$order
 ```r
 homerange %>% 
   select(taxon, order, mean_mass_g, log10_mass, family, genus, species) %>% 
-  filter(taxon=="birds", order== "strigiformes")
+  filter(taxon=="birds", order== "strigiformes") %>% 
+  arrange(desc(mean_mass_g))
 ```
 
 ```
 ## # A tibble: 9 × 7
 ##   taxon order        mean_mass_g log10_mass family    genus      species    
 ##   <fct> <fct>              <dbl>      <dbl> <chr>     <chr>      <chr>      
-## 1 birds strigiformes       119         2.08 strigidae aegolius   funereus   
-## 2 birds strigiformes       252         2.40 strigidae asio       otus       
-## 3 birds strigiformes       156.        2.19 strigidae athene     noctua     
-## 4 birds strigiformes      2191         3.34 strigidae bubo       bubo       
-## 5 birds strigiformes      1510         3.18 strigidae bubo       virginianus
-## 6 birds strigiformes        61.3       1.79 strigidae glaucidium passerinum 
-## 7 birds strigiformes      1920         3.28 strigidae nyctea     scandiaca  
-## 8 birds strigiformes       519         2.72 strigidae strix      aluco      
-## 9 birds strigiformes       285         2.45 tytonidae tyto       alba
+## 1 birds strigiformes      2191         3.34 strigidae bubo       bubo       
+## 2 birds strigiformes      1920         3.28 strigidae nyctea     scandiaca  
+## 3 birds strigiformes      1510         3.18 strigidae bubo       virginianus
+## 4 birds strigiformes       519         2.72 strigidae strix      aluco      
+## 5 birds strigiformes       285         2.45 tytonidae tyto       alba       
+## 6 birds strigiformes       252         2.40 strigidae asio       otus       
+## 7 birds strigiformes       156.        2.19 strigidae athene     noctua     
+## 8 birds strigiformes       119         2.08 strigidae aegolius   funereus   
+## 9 birds strigiformes        61.3       1.79 strigidae glaucidium passerinum
 ```
+The smallest owl is species passerinum from the glaucidium, genus family (Glaucidium passerinum). This  owl is the smallest in Europe with a wingspan of 32-39 centimeters and weight of only 47-83 grams,which is equivalent to around 0.10-0.18 pounds. This owl is also found in areas of Asia including Mongolia and China. This species lives in coniferous forests and mountainous areas. These owls do not migrate and hence hoard their carnivorous foods in the autumn to be consumed in the winter. Their carnivorous diet primarily consists of small mammals, small birds, lizards, fish and insects. 
+
+Source: https://animalia.bio/eurasian-pygmy-owl?letter=e
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 
@@ -832,6 +804,9 @@ homerange %>%
 ## #   trophic_guild <chr>, dimension <dbl>, prey_mass <dbl>,
 ## #   log10_prey_mass <dbl>, PPMR <dbl>, prey_size_reference <chr>
 ```
+The cheriway species, or Caracara, has the largest homerange. The Crested Caracara are omnivorous falcons that primarily live in Central and Southern Americas, along with some southern states in the United States. These birds are black and white with yellow-orange skin on their legs and around their bills.They are medium sized with their wingspan of 122-125 centimeters and lengths of 49-58 centimeters. This species is the only falcon that build their own nests while other falcons use old nests created by other species. 
+
+Source: https://www.allaboutbirds.org/guide/Crested_Caracara/overview 
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
