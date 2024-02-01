@@ -25,7 +25,7 @@ library("janitor")
 
 ## Install `skimr`
 ```{r}
-#install.packages("skimr")
+install.packages("skimr")
 library("skimr")
 ```
 
@@ -34,6 +34,7 @@ For this lab, we will use the built-in data on mammal sleep patterns. From: _V. 
 ```{r}
 ?msleep
 names(msleep)
+msleep
 ```
 
 We will also use [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/articles/intro.html) data in the second part of lab.
@@ -43,8 +44,33 @@ library("palmerpenguins")
 
 ## dplyr Practice
 Let's do a bit more practice to make sure that we understand `select()`, `filter()`, and `mutate()`. Start by building a new data frame `msleep24` from the `msleep` data that: contains the `name` and `vore` variables along with a new column called `sleep_total_24` which is the amount of time a species sleeps expressed as a proportion of a 24-hour day. Restrict the `sleep_total_24` values to less than or equal to 0.3. Arrange the output in descending order.  
-```{r}
 
+```{r}
+names(msleep)
+```
+
+to see the data in the environment box you can do:
+
+```{r}
+msleep <- msleep
+```
+
+Note: Make sure to check every step before completing the entire pipe. One this works, add the "msleep24 <- msleep %>% " on the first row. Look at the second step.
+```{r}
+msleep %>%  
+  mutate(sleep_total_24 = sleep_total/24) %>% 
+  select(name, vore, sleep_total_24) %>% 
+  filter(sleep_total_24 <= 0.3) %>%
+  arrange(desc(sleep_total_24))
+```
+
+```{r}
+msleep24 <- msleep %>%  
+  mutate(sleep_total_24 = sleep_total/24) %>% 
+  select(name, vore, sleep_total_24) %>% 
+  filter(sleep_total_24 <= 0.3) %>%
+  arrange(desc(sleep_total_24))
+msleep24
 ```
 
 Did `dplyr` do what we expected? How do we check our output? Remember, just because your code runs it doesn't mean that it did what you intended.
@@ -54,12 +80,12 @@ Did `dplyr` do what we expected? How do we check our output? Remember, just beca
 
 Try out the new function `skim()` as part of the `skimr` package.
 ```{r}
-
+skim(msleep24)
 ```
 
 Histograms are also a quick way to check the output.
 ```{r}
-
+hist(msleep24$sleep_total_24)
 ```
 
 ## `summarize()`
@@ -83,18 +109,39 @@ mean(large$sleep_total)
 
 We can accomplish the same task using the `summarize()` function to make things cleaner.
 ```{r}
+msleep %>% 
+  filter(bodywt>200) %>% 
+  summarize(mean_sleep_lg = mean(sleep_total))
+```
 
+For small mammals:
+
+```{r}
+msleep %>% 
+  filter(bodywt<10) %>% 
+  summarize(mean_sleep_sm= mean(sleep_total))
 ```
 
 You can also combine functions to make useful summaries for multiple variables.
 ```{r}
-
+msleep %>% 
+  filter(bodywt>200) %>% 
+  summarize(mean_sleep_lg = mean(sleep_total),
+            min_sleep_g=min(sleep_total), 
+            max_sleep_lg=max(sleep_total),
+            sd_sleep_lg=sd(sleep_total), 
+            total=n())
 ```
 
 ## Practice
 1. What is the mean, min, and max `bodywt` for the taxonomic order Primates? Provide the total number of observations.
 ```{r}
-
+msleep %>% 
+  filter(order == "Primates") %>% 
+  summarize(mean_bodywt=mean(bodywt),
+            min_bodywt=min(bodywt), 
+            max_bodywt=max(bodywt),
+            total=n())
 ```
 
 `n_distinct()` is a very handy way of cleanly presenting the number of distinct observations. Here we show the number of distinct genera over 100 in body weight.  
@@ -105,26 +152,43 @@ msleep %>%
   filter(bodywt > 100)
 ```
 
+
+ON EXAM:
 n_distinct() is a very handy way of cleanly presenting the number of distinct observations. Here we show the number of distinct genera over 100 in body weight.
 ```{r}
-
+msleep %>% 
+  summarize(n_genera=n_distinct(genus)) # This is going to count the number of genera in the data "msleep"
 ```
+you can check this via glmpse()
+
+```{r}
+glimpse(msleep)
+```
+There are 83 rows so we know that some of those genera are duplicated.
 
 There are many other useful summary statistics, depending on your needs: sd(), min(), max(), median(), sum(), n() (returns the length of a column), first() (returns first value in a column), last() (returns last value in a column) and n_distinct() (number of distinct values in a column).
 
 ## Practice
 1. How many genera are represented in the msleep data frame?
-```{r}
 
+It is the same as the previous question. 
+```{r}
+msleep %>% 
+  summarize(n_genera=n_distinct(genus))
 ```
 
 ```{r}
-
+msleep %>% 
+  tabyl(genus)
 ```
 
 2. What are the min, max, and mean `sleep_total` for all of the mammals? Be sure to include the total n.
 ```{r}
-
+msleep %>% 
+  summarize(min_sleep_total = min(sleep_total), 
+            max_sleep_total = max(sleep_total),
+            mean_sleep_total = mean(sleep_total), 
+            total=n())
 ```
 
 ## `group_by()`
@@ -137,25 +201,37 @@ msleep %>%
             mean_bodywt = mean(bodywt),
             total=n())
 ```
+Total n is the total number of observations in each category.
 
 ## Practice
 1. Calculate mean brain weight by taxonomic order in the msleep data.
-```{r}
 
+```{r}
+names(msleep)
+```
+
+```{r}
+msleep %>% 
+  group_by(order) %>% 
+  summarize(mean_brain_wt=mean(brainwt))
 ```
 
 2. What does `NA` mean? How are NA's being treated by the summarize function?
 ```{r}
-
+anyNA(msleep)
 ```
 
 3. Try running the code again, but this time add `na.rm=TRUE`. What is the problem with Cetacea? Compare this to Carnivora. 
 ```{r}
-
+msleep %>% 
+  group_by(order) %>% 
+  summarize(mean_brain_wt=mean(brainwt), na.rm=TRUE)
 ```
 
 ```{r}
-
+msleep %>% 
+  filter(order=="Cetacea") %>% 
+  select(order, genus, brainwt)
 ```
 
 ## That's it! Let's take a break and then move on to part 2! 
