@@ -28,16 +28,27 @@ The summarize() and group_by() functions are powerful tools that we can use to p
 ```{r}
 glimpse(penguins)
 ```
-
-As biologists, a good question that we may ask is how do the measured variables differ by island (on average)?
+To know how many islands there are, use levels(). When you run glimpse, you would see that island is a factor so using levels, you would be able to get more info.
 ```{r}
-
+levels(penguins$island)
+```
+ 
+As biologists, a good question that we may ask is how do the measured variables differ by island (on average)? 
+```{r}
+penguins %>% 
+  group_by(island) %>% 
+  summarize(mean_body_mass = mean(body_mass_g),
+            n=n())
 ```
 
 ```{r}
-
+penguins %>% 
+  group_by(island) %>% 
+  summarize(number_NAs=sum(is.na(body_mass_g)))
 ```
+This function shows how many NAs are in each category. 
 
+ow do we get rid of the NA's?
 Why do we have NA here? Do all of these penguins lack data?
 ```{r}
 
@@ -45,9 +56,13 @@ Why do we have NA here? Do all of these penguins lack data?
 
 Well, that won't work so let's remove the NAs and recalculate.
 ```{r}
-
+penguins %>% 
+  filter(!is.na(body_mass_g))
+penguins %>% 
+  group_by(island) %>% 
+  summarize(mean_body_mass = mean(body_mass_g))
 ```
-
+Pull out all of the observations that actually have a number and leave all of the NAs behind.
 What if we are interested in the number of observations (penguins) by species and island?
 ```{r}
 penguins %>% 
@@ -79,18 +94,29 @@ penguins %>%
 
 For counts, I also like `tabyl()`. Lots of options are supported in [tabyl](https://cran.r-project.org/web/packages/janitor/vignettes/tabyls.html)
 ```{r}
-
+penguins %>% 
+  tabyl(island, species)
 ```
 
 ## Practice
 1. How does the mean of `bill_length_mm` compare between penguin species?
 ```{r}
-
+penguins %>% 
+  group_by(species) %>% 
+  summarize(mean_bill_length=mean(bill_length_mm, na.rm=TRUE))
+```
+DO NOT DO THIS! DO not put the "na.rm=T" code outside of the parentheses. R will think you are trying to make a new variable.
+```{r}
+penguins %>% 
+  group_by(species) %>% 
+  summarize(mean_bill_length=mean(bill_length_mm),na.rm=TRUE)
 ```
 
 2. For some penguins, their sex is listed as NA. Where do these penguins occur?
 ```{r}
-
+penguins %>% 
+  count(sex, island)
+  
 ```
 
 ## `across()`
@@ -118,7 +144,7 @@ penguins %>%
 
 ```{r}
 penguins %>%
-  summarize(across(contains("mm"), \(x) mean(x, na.rm = TRUE)))
+  summarize(across(contains("mm"), \(x) mean(x, na.rm = TRUE))) ##Use this to correct the ERROR
 ```
 
 `group_by` also works.
