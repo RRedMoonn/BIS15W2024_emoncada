@@ -97,7 +97,7 @@ colnames(fisheries)
 
 5. Based on the asfis_species_number, how many distinct fish species were caught as part of these data?
 ```{r}
-num_distinct_species <- fisheries_tidy %>%
+num_distinct_species <- fisheries %>%
   distinct(asfis_species_number) %>%
   n_distinct()
 ```
