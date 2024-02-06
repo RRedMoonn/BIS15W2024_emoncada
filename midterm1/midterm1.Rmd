@@ -79,9 +79,7 @@ Problem 6. (2 points) Create a new object "ynp" that only includes the data from
 ynp <- filter(wolves, park=="YNP")
 ```
 
-```{r}
-ynp
-```
+
 
 Problem 7. (3 points) Among the Yellowstone wolf packs, the [Druid Peak Pack](https://www.pbs.org/wnet/nature/in-the-valley-of-the-wolves-the-druid-wolf-pack-story/209/) is one of most famous. What was the average pack size of this pack for the years represented in the data?
 ```{r}
@@ -128,9 +126,6 @@ The mollies wolf pack had the highest overall persistence amongst the years in t
 
 Problem 10. (3 points) Perform one analysis or exploration of your choice on the `wolves` data. Your answer needs to include at least two lines of code and not be a summary function.  
 
-```{r}
-wolves
-```
 
 ```{r}
 wolves %>% 
