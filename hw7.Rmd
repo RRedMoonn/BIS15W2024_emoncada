@@ -78,6 +78,13 @@ amniota %>%
   mutate_all(~ ifelse(. == -999, NA, .))
 ```
 
+
+```{r}
+amniota %>% 
+  replace_with_na_all(condition = ~.x %in% c(common_na_strings, common_na_numbers)) %>% 
+  mutate(amniota=na_if(amniota, "-999"))
+```
+
 ```{r}
 amniota[amniota == -999] <- NA
 anyNA(amniota)
@@ -103,13 +110,23 @@ amniota %>%
 ```
 
 **9. The `amphibio` data have variables that classify species as fossorial (burrowing), terrestrial, aquatic, or arboreal.Calculate the number of NA's in each of these variables. Do you think that the authors intend us to think that there are NA's in these columns or could they represent something else? Explain.**
-```{r}
 
+```{r}
+amphibio
 ```
+
+```{r}
+amphibio %>% 
+  summarize (fossorial_na = sum(is.na(fossorial)),
+    terrestrial_na = sum(is.na(terrestrial)),
+    aquatic_na = sum(is.na(aquatic)),
+    arboreal_na = sum(is.na(arboreal)))
+```
+
 
 **10. Now that we know how NA's are represented in the `amniota` data, how would you load the data such that the values which represent NA's are automatically converted?**
 ```{r}
-
+amniota <- read.csv("data/amniota")
 ```
 
 ## Push your final code to GitHub!
