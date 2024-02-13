@@ -98,7 +98,7 @@ miss_var_summary(amphibio)
 ```{r}
 amniota %>%
   group_by(taxonomic_class) %>%
-  summarise(egg_mass_NA = sum(is.na(egg_mass_g)))
+  summarize(egg_mass_NA = sum(is.na(egg_mass_g)))
 ```
 
 **9. The `amphibio` data have variables that classify species as fossorial (burrowing), terrestrial, aquatic, or arboreal.Calculate the number of NA's in each of these variables. Do you think that the authors intend us to think that there are NA's in these columns or could they represent something else? Explain.**
@@ -118,7 +118,7 @@ amphibio %>%
 
 **10. Now that we know how NA's are represented in the `amniota` data, how would you load the data such that the values which represent NA's are automatically converted?**
 ```{r}
-amniota <- read.csv("data/amniota")
+amniota <- read.csv("data/amniota.csv", na.strings = c("-999"))
 ```
 
 ## Push your final code to GitHub!
