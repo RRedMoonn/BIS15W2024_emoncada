@@ -50,7 +50,7 @@ expenditures
 expenditures %>% 
   pivot_longer(-expenditure,
                names_to = "year",
-               values_to = "bn_dollars")
+               values_to = "bn_dollars") # moving values into bn_dollars
 ```
 
 2. Restrict the data to medical and health expenditures only. Sort in ascending order.
