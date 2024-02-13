@@ -74,13 +74,17 @@ sum(is.na(amphibio))
 **5. Make any necessary replacements in the data such that all NA's appear as "NA".**   
 
 ```{r}
-amniota %>% 
+amniota_new <- amniota %>% 
   replace_with_na_all(condition = ~.x == -999)
 ```
 
 ```{r}
 anyNA(amniota)
 ```
+```
+
+```{r}
+summarize(amniota)
 ```
 
 **6. Use the package `naniar` to produce a summary, including percentages, of missing data in each column for the `amniota` data.**  
