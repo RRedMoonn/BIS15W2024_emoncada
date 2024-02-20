@@ -1,7 +1,7 @@
 ---
 title: "Homework 5"
-author: "Joel Ledford"
-date: "2024-02-03"
+author: "Eva Moncada"
+date: "2024-02-20"
 output:
   html_document: 
     theme: spacelab
@@ -24,10 +24,10 @@ library("tidyverse")
 
 ```
 ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ dplyr     1.1.4     ✔ readr     2.1.4
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ## ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
 ## ✔ purrr     1.0.2     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
@@ -794,8 +794,8 @@ superhero_powers %>%
 
 ```r
 superhero_powers %>%
-  filter(hero_names == "Darth Vader") %>%
-  select_if(all)  # Selects all columns where all values are TRUE
+  filter(hero_names == "Black Widow") %>%
+  select_if(all)
 ```
 
 ```
@@ -803,31 +803,25 @@ superhero_powers %>%
 ```
 
 ```
-## # A tibble: 1 × 26
-##   agility accelerated_healing durability stealth danger_sense marksmanship
-##   <lgl>   <lgl>               <lgl>      <lgl>   <lgl>        <lgl>       
-## 1 TRUE    TRUE                TRUE       TRUE    TRUE         TRUE        
-## # ℹ 20 more variables: weapons_master <lgl>, intelligence <lgl>,
-## #   telepathy <lgl>, energy_blasts <lgl>, super_speed <lgl>,
-## #   electrokinesis <lgl>, enhanced_senses <lgl>, telekinesis <lgl>, jump <lgl>,
-## #   astral_projection <lgl>, reflexes <lgl>, force_fields <lgl>,
-## #   psionic_powers <lgl>, precognition <lgl>, enhanced_hearing <lgl>,
-## #   hypnokinesis <lgl>, light_control <lgl>, illusions <lgl>, cloaking <lgl>,
-## #   the_force <lgl>
+## # A tibble: 1 × 9
+##   agility stealth marksmanship weapons_master longevity intelligence stamina
+##   <lgl>   <lgl>   <lgl>        <lgl>          <lgl>     <lgl>        <lgl>  
+## 1 TRUE    TRUE    TRUE         TRUE           TRUE      TRUE         TRUE   
+## # ℹ 2 more variables: peak_human_condition <lgl>, reflexes <lgl>
 ```
 
 15. Can you find your hero in the superhero_info data? Show their info!  
 
 ```r
 superhero_info %>% 
-  filter(name=="Darth Vader")
+  filter(name=="Black Widow")
 ```
 
 ```
 ## # A tibble: 1 × 11
 ##   name   gender eye_color race  hair_color height publisher skin_color alignment
 ##   <chr>  <chr>  <chr>     <chr> <chr>       <dbl> <chr>     <chr>      <chr>    
-## 1 Darth… Male   yellow    Cybo… No Hair       198 George L… <NA>       bad      
+## 1 Black… Female green     Human Auburn        170 Marvel C… <NA>       good     
 ## # ℹ 2 more variables: weight <dbl>, height_weight_ratio <dbl>
 ```
 
