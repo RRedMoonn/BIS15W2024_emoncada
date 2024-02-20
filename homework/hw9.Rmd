@@ -68,7 +68,14 @@ college %>%
 3. Based on your answer to #2, make a plot that shows the number of colleges in the top 10 cities.
 
 ```{r}
-coe and paste #2
+names(college)
+```
+
+```{r}
+college %>% 
+  select(city, instnm) %>% 
+  count(instnm) %>% 
+  group_by(city)+ 
 ggplot(x=cities, y=number of colleges)
 ```
 
