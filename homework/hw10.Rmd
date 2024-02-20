@@ -80,9 +80,7 @@ deserts %>%
 
 ```{r}
 ggplot(tabyl(deserts, taxa), aes(x = taxa, y = percent)) +
-  geom_point(stat = "identity") +
-  labs(x = "Taxa",
-       y = "Proportion")
+  geom_point(stat = "identity") 
 ```
 
 
@@ -90,37 +88,30 @@ ggplot(tabyl(deserts, taxa), aes(x = taxa, y = percent)) +
 
 ```{r}
 deserts %>%
-  group_by(genus, species, plot_type) %>%
-  summarize(proportion = n() / sum(n())) %>%
-  ungroup() %>%
-  ggplot(aes(x = plot_type, fill = plot_type, y = proportion)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~genus + species, ncol = 2, scales = "free")
+  group_by(taxa, plot_type) %>%
+  summarise(proportion = n() / sum(n())) %>%
+  ungroup()
 ```
 
+```{r}
+ggplot(deserts, aes(x = taxa, fill = plot_type)) +
+  geom_bar(position = "fill")
+```
 
 5. What is the range of weight for each species included in the study? Remove any observations of weight that are NA so they do not show up in the plot.
 
 ```{r}
-deserts_filtered <- deserts %>%
-  filter(!is.na(weight))
-ggplot(deserts_filtered, aes(x = species, y = weight)) +
-  geom_boxplot() +
-  labs(title = "Range of Weight for Each Species",
-       x = "Species",
-       y = "Weight")
+ggplot(deserts %>% filter(!is.na(weight)), aes(x = species, y = weight)) +
+  geom_boxplot()
 ```
 
 
 6. Add another layer to your answer from #5 using `geom_point` to get an idea of how many measurements were taken for each species.
 
 ```{r}
-ggplot(deserts_filtered, aes(x = species, y = weight)) +
+ggplot(deserts %>% filter(!is.na(weight)), aes(x = species, y = weight)) +
   geom_boxplot() +
-  geom_point(stat = "count", aes(size = ..count..)) +
-  labs(title = "Range of Weight for Each Species",
-       x = "Species",
-       y = "Weight")
+  geom_point(aes(y=max(weight)))
 ```
 
 
@@ -128,9 +119,19 @@ ggplot(deserts_filtered, aes(x = species, y = weight)) +
 
 ```{r}
 deserts %>%
-  filter(species == "Dipodomys merriami")
-  group_by(year) %>%
+  filter(species == "Dipodomys merriami") %>% 
+  group_by(year) %>% 
   summarise(num_observations = n())
+```
+
+
+```{r}
+ggplot(deserts %>% 
+         filter(species == "Dipodomys merriami") %>%
+         group_by(year) %>%
+         summarise(num_observations = n()),
+       aes(x = year, y = num_observations)) +
+  geom_point()
 ```
 
 8. What is the relationship between `weight` and `hindfoot` length? Consider whether or not over plotting is an issue.
@@ -149,28 +150,26 @@ ggplot(deserts, aes(x = weight, y = hindfoot_length)) +
 
 9. Which two species have, on average, the highest weight? Once you have identified them, make a new column that is a ratio of `weight` to `hindfoot_length`. Make a plot that shows the range of this new ratio and fill by sex.
 
+```{r}
+names(deserts)
+```
+
 
 ```{r}
 deserts %>%
   group_by(species) %>%
-  summarise(avg_weight = mean(weight, na.rm = TRUE))
+  summarise(avg_weight = mean(weight, na.rm = TRUE)) %>% 
+  arrange(desc(avg_weight))
 ```
 
 ```{r}
-top_species <- species_avg_weight %>%
-  top_n(2, avg_weight)
 deserts %>%
-  mutate(weight_to_hindfoot_ratio = weight / hindfoot)
+  mutate(weight_to_hindfoot_ratio = ifelse(is.na(hindfoot_length) | hindfoot_length == 0, NA, weight / hindfoot_length))
 ```
 
 ```{r}
-ggplot(deserts, aes(x = weight_to_hindfoot_ratio, fill = sex)) +
-  geom_histogram(bins = 30, position = "identity") +
-  facet_wrap(~species, scales = "free") +
-  labs(title = "Range of Weight to Hindfoot Length Ratio by Sex",
-       x = "Weight to Hindfoot Length Ratio",
-       y = "Count") +
-  theme_minimal()
+ggplot(deserts, aes(x = weight_to_hindfoot_ratio, fill = sex, color = species)) +
+  geom_histogram(bins=30)
 ```
 
 
@@ -178,13 +177,8 @@ ggplot(deserts, aes(x = weight_to_hindfoot_ratio, fill = sex)) +
 10. Make one plot of your choice! Make sure to include at least two of the aesthetics options you have learned.
 
 ```{r}
-ggplot(deserts, aes(x = weight, y = hindfoot, color = species, shape = plot_type)) +
-  geom_point(size = 3) +
-  scale_color_brewer(palette = "Set1") +
-  labs(title = "Relationship between Weight and Hindfoot Length",
-       x = "Weight",
-       y = "Hindfoot Length") +
-  theme_minimal()
+ggplot(deserts, aes(x = weight, y = hindfoot_length, color = species, shape = plot_type)) +
+  geom_point(size = 3)
 ```
 
 ## Push your final code to GitHub!
