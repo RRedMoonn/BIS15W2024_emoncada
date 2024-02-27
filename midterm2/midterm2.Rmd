@@ -222,5 +222,5 @@ ggplot(data = white_sharks, aes(x = track_days, y = total_length_cm)) +
   theme_minimal()
 ```
 
-I wanted to make a plot that shows how the total length vary with the number of days the sharks were tracked. I was thinking that perhaps the day they sharks were tracked may show some sort of coincendence or trend of the scientists looking at mainly females or males. Perhaps they were seeking a specific maturity level however it seems that there is no correlation between total length ad track day. 
+I wanted to make a plot that shows how the total length varies with the number of days the sharks were tracked. I was thinking that perhaps the day the sharks were tracked may show some sort of coincidence or trend of the scientists looking at mainly females or males. Perhaps they were seeking a specific maturity level however it seems that there is no correlation between total length and track day. 
 
