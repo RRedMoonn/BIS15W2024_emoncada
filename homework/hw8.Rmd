@@ -3,9 +3,9 @@ title: "Homework 8"
 author: "Eva Moncada"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
-    toc: no
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -41,7 +41,7 @@ sydneybeaches <- read_csv("data/sydneybeaches.csv")
 
 If you want to try `here`, first notice the output when you load the `here` library. It gives you information on the current working directory. You can then use it to easily and intuitively load files.
 ```{r}
-#library(here)
+library(here)
 ```
 
 The quotes show the folder structure from the root directory.
@@ -100,24 +100,34 @@ sydneybeaches_long %>%
 
 7. What is the average `enterococci_cfu_100ml` by year for each beach. Think about which data you will use- long or wide.
 ```{r}
-sydneybeaches_long %>% 
-  group_by(year) %>% 
-  summarize(average_enterococci = mean(enterococci_cfu_100ml), na.rm=T)
+mean_entero <- 
+  sydneybeaches_long %>% 
+  separate(date, into=c("day", "month", "year"), sep="/") %>% 
+  group_by(site, year) %>% 
+  summarize(mean_enterococci_cfu_100ml=mean(enterococci_cfu_100ml, na.rm=T))
+mean_entero
 ```
 
 8. Make the output from question 7 easier to read by pivoting it to wide format.
 
 ```{r}
-
+mean_entero %>% 
+  pivot_wider(names_from=site,
+              values_from=mean_enterococci_cfu_100ml)
 ```
 
 
 9. What was the most polluted beach in 2013?
 
 ```{r}
-sydneybeaches %>% 
-  group_by(enterococci_cfu_100ml) %>% 
-  filter(year==2013)
+mean_entero %>% 
+  pivot_wider(names_from=site,
+              values_from=mean_enterococci_cfu_100ml) %>% 
+  filter(year==2013) %>% 
+  pivot_longer(-year,
+               names_to = "site",
+               values_to = "mean_enterococci_cfu_100ml") %>% 
+  slice_max(mean_enterococci_cfu_100ml, n=3)
 ```
 
 10. Please complete the class project survey at: [BIS 15L Group Project](https://forms.gle/H2j69Z3ZtbLH3efW6)
