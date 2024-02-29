@@ -29,7 +29,7 @@ library(janitor)
 
 ## Install and load the `ggmap` package  
 ```{r message=FALSE, warning=FALSE}
-#install.packages("ggmap")
+install.packages("ggmap")
 library(ggmap)
 ```
 
@@ -105,25 +105,37 @@ sharks_dups <- sharks %>%
 ```
 
 ```{r}
-
+names(sharks_dups)
 ```
 
 ```{r}
+sharks_dups %>% 
+  select(longitude, latitude) %>% 
+  summary()
+```
 
+```{r}
+lat2 <- c(32.59, 41.46)
+long2 <- c(-124.7, -117.1)
+bbox2 <- make_bbox(long2, lat2, f = 0.03)
 ```
 
 2. Load a map from `stamen` in a terrain style projection and display the map.
 ```{r}
+map2 <- get_stadiamap(bbox2, maptype = "stamen_terrain", zoom=7)
 
 ```
 
 ```{r}
-
+ggmap(map2)
 ```
 
 3. Build a map that overlays the recorded observations of shark attacks in California.
 ```{r}
-
+ggmap(map2)+
+  geom_point(data = sharks_dups, aes(longitude, latitude), size=0.4) +
+  labs(x= "Longitude", y= "Latitude", title="Shark Incidents")
+  
 ```
 
 4. What if you only wanted to map the fatalities?

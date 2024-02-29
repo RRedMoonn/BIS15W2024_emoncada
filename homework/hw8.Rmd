@@ -26,7 +26,7 @@ library(janitor)
 ## Install `here`
 The package `here` is a nice option for keeping directories clear when loading files. I will demonstrate below and let you decide if it is something you want to use.  
 ```{r}
-#install.packages("here")
+install.packages("here")
 ```
 
 ## Data
@@ -54,6 +54,8 @@ sydneybeaches
 ```
 
 2. Are these data "tidy" per the definitions of the tidyverse? How do you know? Are they in wide or long format?
+
+The data is in a wide format. It is tidy since the variables all have its own columns.
 
 3. We are only interested in the variables site, date, and enterococci_cfu_100ml. Make a new object focused on these variables only. Name the object `sydneybeaches_long`
 

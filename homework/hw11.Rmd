@@ -102,9 +102,9 @@ gapminder %>%
 gapminder %>%
   ggplot(aes(x=gdpPercap, y=lifeExp))+
   geom_point()+
-  scale_x_log10()+
   geom_smooth(method=lm, se=F)+
-  labs(title = "GDP vs. Life Expectancy",
+  scale_x_log10()+
+  labs(title = "per Capita GDP vs. Life Expectancy",
        x = "GDP per capita (log 10)",
        y = "Life expectancy")
 ```
@@ -112,7 +112,7 @@ gapminder %>%
 **7. Which countries have had the largest population growth since 1952?**
 ```{r}
 gapminder %>% 
-  select(country, year, pop) %>% 
+  select(country, pop, year) %>% 
   filter(year==1952 | year==2007) %>% 
   pivot_wider(names_from = year,
               names_prefix = "yr_",
@@ -124,8 +124,8 @@ gapminder %>%
 **8. Use your results from the question above to plot population growth for the top five countries since 1952.**
 ```{r}
 gapminder %>% 
-  filter(country=="China" | country=="India" | country=="United States" | country=="Indonesia" | country=="Brazil") %>% 
-  select(country, year, pop) %>% 
+  filter(country=="China"|country=="India"|country=="United States"|country=="Indonesia"|country=="Brazil") %>% 
+  select(country, pop, year) %>% 
   ggplot(aes(x=year, y=pop, color=country))+
   geom_line()
 ```
@@ -133,8 +133,8 @@ gapminder %>%
 **9. How does per capita GDP growth compare between these same five countries?**
 ```{r}
 gapminder %>% 
-  filter(country=="China" | country=="India" | country=="United States" | country=="Indonesia" | country=="Brazil") %>% 
-  select(year, country, gdpPercap) %>% 
+  filter(country=="China"|country=="India"|country=="United States"|country=="Indonesia"|country=="Brazil") %>% 
+  select(country, year, gdpPercap) %>% 
   ggplot(aes(x=year, y=gdpPercap, group=country, color=country))+
   geom_line()
 ```
@@ -143,7 +143,7 @@ gapminder %>%
 
 ```{r}
 gapminder %>% 
-  select(country, year, pop) %>% 
+  select(country, pop, year) %>% 
   filter(year==1952 | year==2007) %>% 
   pivot_wider(names_from = year,
               values_from = pop) %>% 
