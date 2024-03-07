@@ -71,41 +71,19 @@ blood_count %>%
 
 
 6. FIX
+
 ```{r}
 blood_count %>%
-  pivot_wider(cols = colnames(blood_count)[3:9], names_to = "Test", values_to = "Values") %>%
-  ggplot(aes(x = Gender, y = Values, fill = Gender)) +
+  pivot_longer(cols = Hemoglobin:MCHC, names_to = "Test", values_to = "Values") %>%
+  ggplot(aes(x = Gender, y = Values, fill = Gender, group = Gender)) +
   geom_boxplot() +
   facet_wrap(~ Test, scales = "free") +
   labs(title = "Boxplot of Blood Count Tests",
-       x = "Test",
+       x = "Gender",
        y = "Values")
 ```
-
-
 ```{r}
-blood_count %>%
-  pivot_wider(cols = colnames(blood_count)[3:9], names_to = "Test", values_to = "Values") %>%
-  blood_count %>%
-  pivot_wider(names_from = c("Hemoglobin", "Platelet_Count", "White_Blood_Cells", "Red_Blood_Cells", "MCV", "MCH", "MCHC"), values_from = "Values")
-  ggplot(aes(x = Gender, y = Values, fill = Gender)) +
-  geom_boxplot() +
-  facet_wrap(~ Test, scales = "free") +
-  labs(title = "Boxplot of Blood Count Tests",
-       x = "Test",
-       y = "Values")
-
-```
-```{r}
-blood_count %>%
-  pivot_wider(cols = colnames(blood_count)[3:9], names_to = "Test", values_to = "Values") %>%
-  pivot_wider(names_from = "Test", values_from = "Values") %>%
-  ggplot(aes(x = Gender, y = Values, fill = Gender)) +
-  geom_boxplot() +
-  facet_wrap(~ Test, scales = "free") +
-  labs(title = "Boxplot of Blood Count Tests",
-       x = "Test",
-       y = "Values")
+names(blood_count)
 ```
 
 
