@@ -18,6 +18,10 @@ Answer the following questions and complete the exercises in RMarkdown. Please e
 
 Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
 
+```{r}
+install.packages("shinydashboard")
+```
+
 ## Libraries
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -37,16 +41,114 @@ UC_admit <- read_csv("data/UC_admit.csv")
 glimpse(UC_admit)
 ```
 
-**2. The president of UC has asked you to build a shiny app that shows admissions by ethnicity across all UC campuses. Your app should allow users to explore year, campus, and admit category as interactive variables. Use shiny dashboard and try to incorporate the aesthetics you have learned in ggplot to make the app neat and clean.**  
+```{r}
+summary(UC_admit)
+```
 
 ```{r}
- 
+names(UC_admit)
+```
+
+**2. The president of UC has asked you to build a shiny app that shows admissions by ethnicity across all UC campuses. Your app should allow users to explore year, campus, and admit category as interactive variables. Use shiny dashboard and try to incorporate the aesthetics you have learned in ggplot to make the app neat and clean.** 
+
+```{r}
+ui <- dashboardPage(
+  
+  dashboardHeader(title = "UC Admissions by Ethnicity"),
+  
+  dashboardSidebar(disable=T),
+  dashboardBody(
+  fluidRow(
+  box(width = 3,
+      plotOutput("admissionsPlot"),
+      title = "Admissions by Ethnicity",
+      
+    selectInput("year", "Select Year:", unique(UC_admit$Year)),
+    selectInput("campus", "Select Campus:", unique(UC_admit$Campus)),
+    selectInput("category", "Select Admit Category:", c("Applications", "Admits", "Enrollees"))
+  ),
+  
+  box(width = 7,
+  plotOutput("plot", width = "600px", height = "400px")
+)
+)
+)
+)
+
+
+server <- function(input, output) {
+
+    session$onSessionEnded(stopApp)
+  
+  output$plot <- renderPlot({
+      UC_admit %>% 
+      filter(Ethnicity!="NA") %>%
+      filter(Year == input$year, Campus == input$campus) %>%
+      select(Ethnicity, input$category)
+      ggplot(filtered_data(), aes(x = Ethnicity, fill = Ethnicity)) +
+      geom_bar(stat = "identity") +
+      labs(title = paste("UC Admissions by Ethnicity -", input$category),
+           x = "Ethnicity",
+           y = input$category,
+           fill = "Ethnicity") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  })
+}
+
+
+shinyApp(ui, server)
 ```
 
 **3. Make alternate version of your app above by tracking enrollment at a campus over all of the represented years while allowing users to interact with campus, category, and ethnicity.**
 
 ```{r}
-glimpse(UC_admit)
+ui_2 <- dashboardPage(
+  
+  dashboardHeader(title = "UC Enrollment by Ethnicity Over Years"),
+  
+  dashboardSidebar(disable=T),
+  
+  dashboardBody(
+  fluidRow(
+  box(width = 3,
+      
+    selectInput("campus_alt", "Select Campus:", unique(UC_admit$Campus)),
+    selectInput("category_alt", "Select Category:", c("Applications", "Admits", "Enrollees")),
+    selectInput("ethnicity_alt", "Select Ethnicity:", unique(UC_admit$Ethnicity))
+  ),
+  
+  box(width = 7,
+      plotOutput("plot", width = "600px", height = "400px"),
+      plotOutput("enrollmentPlot"),
+      title = "Enrollment by Ethnicity Over Years"
+)
+)
+)
+)
+
+server <- function(input, output, session) { 
+
+  session$onSessionEnded(stopApp) 
+
+   output$plot <- renderPlot({
+      UC_admit %>% 
+      filter(Ethnicity!="NA") %>%
+      filter(Campus == "Davis", Category == input$category_alt, Ethnicity == input$ethnicity_alt) %>%
+       select(Year, Enrollees)
+     ggplot(filtered_data_alt(), aes(x = Year, fill = Year)) +
+      geom_line(color = "blue") +
+      geom_point(color = "blue") +
+      labs(title = paste("UC Enrollment by Ethnicity Over Years -", input$ethnicity_alt),
+           x = "Year",
+           y = "Enrollment",
+           color = "Ethnicity") +
+      theme_minimal()
+  })
+}
+
+shinyApp(ui, server)
+
 ```
 
 ## Push your final code to GitHub!
