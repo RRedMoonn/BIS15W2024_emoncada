@@ -1,6 +1,6 @@
 ---
 title: "BIS15L_AI_class"
-author: "Your Name"
+author: "Eva Moncada"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -29,12 +29,20 @@ Go to Tools -> Global Options -> Copilot -> Enable Git
 ## Exploration Questions:
 Lets get some get a feel for what copilot (or ChatGPT) does, use Github Copilot to autocomplete the questions below. You can alternatively paste the questions in ChatGPT or Microsoft Copilot.
 1. What is AI?
+AI, or artificial intelligence, is the simulation of human intelligence by machines. It involves tasks like learning from data, reasoning, and self-correction. AI can be narrow, focused on specific tasks, or general, with broader capabilities. It's used in various fields to automate tasks, improve efficiency, and make better decisions.
 
 2. What is ChatGPT?
+ChatGPT is a conversational AI developed by OpenAI, based on the GPT (Generative Pre-trained Transformer) architecture. It's designed to engage in natural language conversations with users, providing helpful responses, generating text, and assisting with a wide range of tasks.
 
 3. What is Github Copilot?
+GitHub Copilot is an AI-powered code completion tool developed by GitHub in collaboration with OpenAI. It provides intelligent code suggestions and auto-completions directly within integrated development environments (IDEs) like Visual Studio Code. Copilot is trained on a vast amount of code from public repositories and can generate code snippets, functions, and even entire methods based on natural language descriptions or existing code patterns. It aims to boost developer productivity by automating repetitive tasks and assisting with writing code.
 
-4. [Try it yourself: Insert your own question here]
+
+4. What is ChatGPT best used for?
+ChatGPT is best used for engaging in natural language conversations, providing information and assistance on various topics, generating creative content such as stories or poems, offering suggestions and advice, and assisting with tasks like brainstorming, writing, and problem-solving. It's particularly useful for tasks that involve text generation, understanding context, and providing relevant responses based on user input.
+
+5. What is tidyverse?
+Tidyverse is a collection of R packages designed for data science and data analysis. It includes a cohesive set of packages that share a common philosophy and syntax, making it easier to work with data in R. Tidyverse packages are known for their consistency, readability, and integration, providing tools for data manipulation, visualization, modeling, and more. Some of the core packages in tidyverse include ggplot2 for data visualization, dplyr for data manipulation, tidyr for data tidying, and readr for reading data into R. Overall, tidyverse simplifies the data analysis workflow in R and is widely used by data scientists and analysts.
 
 ## Load the libraries  
 ```{r message=FALSE, warning=FALSE}
@@ -45,49 +53,103 @@ library(shiny)
 library(shinydashboard)
 ```
 
-## Load the Data: 
+## Load the Data: load the Netflix Data in your Data folder, save it under the object name netflix
+
 ```{r}
-#load the Netflix Data in your Data folder, save it under the object name netflix
-
-
+netflix <- read_csv("data/netflix_titles.csv")
 ```
 
 *Did copilot help you write the code above? Could anything about the prompt be improved to help Copilot understand what you want to do more accurately?*
-
+I did not use copilot in class. Will try again at home.
 
 ## Lets Practice:
 Explore the elements in your data: include a comment within your code chunk to prompt Copilot to use the function of your choice
 ```{r}
-
+summary(netflix)
 
 ```
 *Did copilot use your preferred method to get the summary of the data? If not, how could you improve the prompt to get the desired output?*
 
+```{r}
+names(netflix)
+```
 
 Sort out the movies from the netflix into an new object called netflix_movies
 ```{r} 
+netflix_movies <- netflix[netflix$type == "Movie", ]
+
+head(netflix_movies)
 
 ```
 
 
 Which director has the most movies on netflix?
 ```{r}
-
-
+director_count <- table(netflix_movies$director)
+most_movies_director <- names(director_count)[which.max(director_count)]
+most_movies_director
 ```
 *Do you see anything wrong with the table above, look at row 1. Write a prompt below to fix this.*
 
-[insert your prompt here]
+
+Help me fix this problem: The names of the director are combined where some inputs are shown as two directors. How do I fix this datset to not include directors in the same column. 
 ```{r}
+# Separate the entries with multiple directors by comma and space
+netflix_movies <- separate_rows(netflix_movies, director, sep = ",\\s*")
+
+# Remove leading and trailing whitespace
+netflix_movies$director <- trimws(netflix_movies$director)
+
+# View the first few rows of the updated dataset
+head(netflix_movies)
+
+```
+```{r}
+# Separate the entries with multiple directors by comma and space
+netflix_movies <- separate_rows(netflix_movies, director, sep = ",\\s*", convert = FALSE)
+
+# Remove leading and trailing whitespace
+netflix_movies$director <- trimws(netflix_movies$director)
+
+# View the first few rows of the updated dataset
+head(netflix_movies)
 
 ```
 
+```{r}
+library(tidyr)
 
+# Separate each director into its own row
+netflix <- separate_rows(netflix, director, sep = ",")
+
+# Remove leading and trailing whitespace
+netflix$director <- trimws(netflix$director)
+
+# View the first few rows of the updated dataset
+head(netflix)
+
+```
 
 Which director had the most movies by release year and remove the NA's?
 ```{r}
+library(dplyr)
 
+# Remove rows with NA values in the director column
+netflix_clean <- netflix %>% filter(!is.na(director))
 
+# Group by director and release year, then count the number of movies
+director_movie_count <- netflix_clean %>%
+  group_by(director, release_year) %>%
+  summarize(number_of_movies = n()) %>%
+  ungroup()
+
+# Find the director with the most movies by release year
+most_movies_director <- director_movie_count %>%
+  group_by(release_year) %>%
+  slice(which.max(number_of_movies))
+
+# View the result
+most_movies_director
 ```
 *See anything else interesting about this table, look at the first director on the table. Could this be a problem and how can we edit the dataset to fix this? Try writing a prompt.*
 
@@ -101,25 +163,160 @@ Which director had the most movies by release year and remove the NA's?
 
 Make a bar plot of the top directors with the most movies on netflix
 ```{r}
+library(ggplot2)
 
+# Remove rows with NA values in the director column
+netflix_clean <- netflix %>% filter(!is.na(director))
+
+# Count the number of movies for each director
+director_movie_count <- netflix_clean %>%
+  group_by(director) %>%
+  summarize(number_of_movies = n()) %>%
+  ungroup() %>%
+  # Sort by number of movies in descending order
+  arrange(desc(number_of_movies)) %>%
+  # Select the top 10 directors
+  head(10)
+
+# Create a bar plot
+ggplot(director_movie_count, aes(x = reorder(director, number_of_movies), y = number_of_movies)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Top Directors with the Most Movies on Netflix",
+       x = "Director",
+       y = "Number of Movies") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 
 ```
 *Do you see any issues with this plot? How could we improve the prompt to get a better boxplot? Try writing a prompt.*
 
-[Insert your prompt here]
 ```{r}
+library(ggplot2)
+
+# Remove rows with NA values in the director column
+netflix_clean <- netflix %>% filter(!is.na(director))
+
+# Count the number of movies for each director
+director_movie_count <- netflix_clean %>%
+  group_by(director) %>%
+  summarize(number_of_movies = n()) %>%
+  ungroup()
+
+# Create categories for directors based on the number of movies they have directed
+director_movie_count$category <- cut(director_movie_count$number_of_movies, 
+                                     breaks = c(0, 5, 10, 15, 20, Inf),
+                                     labels = c("1-5", "6-10", "11-15", "16-20", "21+"),
+                                     include.lowest = TRUE)
+
+# Create a box plot
+ggplot(director_movie_count, aes(x = category, y = number_of_movies)) +
+  geom_boxplot(fill = "skyblue") +
+  labs(title = "Distribution of Number of Movies per Director on Netflix",
+       x = "Number of Movies Directed",
+       y = "Number of Directors")
 
 ```
 
 *How about for just 2020*
 
-
-
-[Insert your prompt here]
 ```{r}
+library(ggplot2)
+
+# Filter the dataset to include only movies released in 2020
+netflix_2020 <- netflix_clean %>% filter(release_year == 2020)
+
+# Count the number of movies for each director
+director_movie_count <- netflix_2020 %>%
+  group_by(director) %>%
+  summarize(number_of_movies = n()) %>%
+  ungroup()
+
+# Create categories for directors based on the number of movies they have directed
+director_movie_count$category <- cut(director_movie_count$number_of_movies, 
+                                     breaks = c(0, 5, 10, 15, 20, Inf),
+                                     labels = c("1-5", "6-10", "11-15", "16-20", "21+"),
+                                     include.lowest = TRUE)
+
+# Create a box plot
+ggplot(director_movie_count, aes(x = category, y = number_of_movies)) +
+  geom_boxplot(fill = "skyblue") +
+  labs(title = "Distribution of Number of Movies per Director on Netflix in 2020",
+       x = "Number of Movies Directed",
+       y = "Number of Directors")
 
 ```
 
+```{r}
+library(ggplot2)
+
+# Filter the dataset to include only movies released in 2020
+netflix_2020 <- netflix_clean %>% filter(release_year == 2020)
+
+# Count the number of movies for each director
+director_movie_count <- netflix_2020 %>%
+  group_by(director) %>%
+  summarize(number_of_movies = n()) %>%
+  ungroup()
+
+# Create categories for directors based on the number of movies they have directed
+director_movie_count$category <- cut(director_movie_count$number_of_movies, 
+                                     breaks = c(0, 5, 10, 15, 20, Inf),
+                                     labels = c("1-5", "6-10", "11-15", "16-20", "21+"),
+                                     include.lowest = TRUE)
+
+# Create a box plot with improved aesthetics
+ggplot(director_movie_count, aes(x = category, y = number_of_movies, fill = category)) +
+  geom_boxplot(outlier.shape = NA, color = "black", alpha = 0.8) +  # Remove outlier points and customize outline color and transparency
+  geom_jitter(position = position_jitter(width = 0.2), color = "skyblue", alpha = 0.5) +  # Add jittered points for each director's movie count
+  labs(title = "Distribution of Number of Movies per Director on Netflix in 2020",
+       x = "Number of Movies Directed",
+       y = "Number of Directors") +
+  scale_fill_brewer(palette = "Blues") +  # Use a blue color palette
+  theme_minimal() +  # Use a minimalistic theme
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")  # Rotate x-axis labels and remove legend
+
+
+```
+
+```{r}
+library(ggplot2)
+
+# Filter the dataset to include only movies released in 2020
+netflix_2020 <- netflix_clean %>% filter(release_year == 2020)
+
+# Count the number of movies for each director
+director_movie_count <- netflix_2020 %>%
+  group_by(director) %>%
+  summarize(number_of_movies = n()) %>%
+  ungroup()
+
+# Create categories for directors based on the number of movies they have directed
+director_movie_count$category <- cut(director_movie_count$number_of_movies, 
+                                     breaks = c(0, 5, 10, 15, 20, Inf),
+                                     labels = c("1-5", "6-10", "11-15", "16-20", "21+"),
+                                     include.lowest = TRUE)
+
+# Create a box plot with improved aesthetics
+ggplot(director_movie_count, aes(x = category, y = number_of_movies, fill = category)) +
+  geom_boxplot(outlier.shape = NA, color = "black", alpha = 0.8, width = 0.5) +  # Remove outlier points and customize outline color and transparency
+  geom_jitter(position = position_jitter(width = 0.2), color = "skyblue", alpha = 0.5) +  # Add jittered points for each director's movie count
+  labs(title = "Distribution of Number of Movies per Director on Netflix in 2020",
+       x = "Number of Movies Directed",
+       y = "Number of Directors") +
+  scale_fill_brewer(palette = "Blues") +  # Use a blue color palette
+  theme_minimal() +  # Use a minimalistic theme
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12, color = "black"),  # Rotate x-axis labels and customize text size and color
+        axis.text.y = element_text(size = 12, color = "black"),  # Customize y-axis text size and color
+        axis.title = element_text(size = 14, color = "black"),  # Customize axis title text size and color
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5),  # Customize plot title text size, weight, and alignment
+        legend.position = "none",  # Remove legend
+        panel.grid.major = element_blank(),  # Remove major gridlines
+        panel.grid.minor = element_blank(),  # Remove minor gridlines
+        panel.border = element_rect(color = "black", fill = NA, size = 1),  # Add border around plot area
+        plot.background = element_rect(fill = "white", color = NA),  # Set plot background color
+        panel.background = element_rect(fill = "white", color = NA),  # Set panel background color
+        axis.line = element_line(color = "black", size = 0.5))  # Customize axis line color and size
+
+```
 
 *Take a few minutes to make your own plot(s) using prompts, edit prompts until you get a plot that you like.*
 
@@ -129,11 +326,185 @@ Make a bar plot of the top directors with the most movies on netflix
 
 
 ## Lets make the top 10 directors barplot into a Shiny App: use copilot or Chatgpt
+```{r}
+library(shiny)
+library(dplyr)
+library(ggplot2)
+
+# Define UI
+ui <- fluidPage(
+  titlePanel("Top 10 Directors with the Most Movies on Netflix"),
+  sidebarLayout(
+    sidebarPanel(
+      # No sidebar content needed for this app
+    ),
+    mainPanel(
+      plotOutput("barplot")
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output) {
+  # Load the dataset
+  netflix <- read.csv("netflix_data.csv")  # Replace "netflix_data.csv" with your file path
+  
+  # Remove rows with NA values in the director column
+  netflix_clean <- netflix %>% filter(!is.na(director))
+  
+  # Count the number of movies for each director
+  director_movie_count <- netflix_clean %>%
+    group_by(director) %>%
+    summarize(number_of_movies = n()) %>%
+    ungroup() %>%
+    # Sort by number of movies in descending order
+    arrange(desc(number_of_movies)) %>%
+    # Select the top 10 directors
+    head(10)
+  
+  # Render the bar plot
+  output$barplot <- renderPlot({
+    ggplot(director_movie_count, aes(x = reorder(director, number_of_movies), y = number_of_movies)) +
+      geom_bar(stat = "identity", fill = "skyblue") +
+      labs(title = "Top 10 Directors with the Most Movies on Netflix",
+           x = "Director",
+           y = "Number of Movies") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
+
+```
 
 
 *Now use ChatGPT, Copilot or previous notes to fix the code*
 
+```{r}
+library(shiny)
+library(dplyr)
+library(ggplot2)
 
+# Define UI
+ui <- fluidPage(
+  titlePanel("Top Directors with the Most Movies on Netflix"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("top_directors", "Select number of top directors to visualize:",
+                  choices = c(5, 10, 15), selected = 10),
+      selectInput("release_year", "Select release year:",
+                  choices = c(2008, 2010, 2020), selected = 2020)
+    ),
+    mainPanel(
+      plotOutput("barplot")
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output) {
+  # Load the dataset
+  netflix <- read.csv("netflix_data.csv")  # Replace "netflix_data.csv" with your file path
+  
+  # Remove rows with NA values in the director column
+  netflix_clean <- netflix %>% filter(!is.na(director))
+  
+  # Define a reactive expression to dynamically filter top directors based on user input
+  top_directors_data <- reactive({
+    # Filter the dataset based on selected release year
+    filtered_data <- netflix_clean %>% filter(release_year == input$release_year)
+    
+    # Count the number of movies for each director
+    director_movie_count <- filtered_data %>%
+      group_by(director) %>%
+      summarize(number_of_movies = n()) %>%
+      ungroup() %>%
+      # Sort by number of movies in descending order
+      arrange(desc(number_of_movies)) %>%
+      # Select the top directors based on user input
+      head(input$top_directors)
+    return(director_movie_count)
+  })
+  
+  # Render the bar plot
+  output$barplot <- renderPlot({
+    ggplot(top_directors_data(), aes(x = reorder(director, number_of_movies), y = number_of_movies)) +
+      geom_bar(stat = "identity", fill = "skyblue") +
+      labs(title = paste("Top", input$top_directors, "Directors with the Most Movies on Netflix"),
+           x = "Director",
+           y = "Number of Movies") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
+
+```
+
+
+```{r}
+library(shiny)
+library(dplyr)
+library(ggplot2)
+
+# Define UI
+ui <- fluidPage(
+  titlePanel("Top Directors with the Most Movies on Netflix"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("top_directors", "Select number of top directors to visualize:",
+                  choices = c(5, 10, 15), selected = 10),
+      selectInput("release_year", "Select release year:",
+                  choices = c(2008, 2010, 2020), selected = 2020)
+    ),
+    mainPanel(
+      plotOutput("barplot")
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output) {
+  # Load the dataset
+  netflix <- read.csv("netflix_data.csv")  # Replace "netflix_data.csv" with your file path
+  
+  # Remove rows with NA values in the director column
+  netflix_clean <- netflix %>% filter(!is.na(director))
+  
+  # Define a reactive expression to dynamically filter top directors based on user input
+  top_directors_data <- reactive({
+    # Filter the dataset based on selected release year
+    filtered_data <- netflix_clean %>% filter(release_year == input$release_year)
+    
+    # Count the number of movies for each director
+    director_movie_count <- filtered_data %>%
+      group_by(director) %>%
+      summarize(number_of_movies = n()) %>%
+      ungroup() %>%
+      # Sort by number of movies in descending order
+      arrange(desc(number_of_movies)) %>%
+      # Select the top directors based on user input
+      head(input$top_directors)
+    return(director_movie_count)
+  })
+  
+  # Render the bar plot
+  output$barplot <- renderPlot({
+    ggplot(top_directors_data(), aes(x = reorder(director, number_of_movies), y = number_of_movies)) +
+      geom_bar(stat = "identity", fill = "skyblue") +
+      labs(title = paste("Top", input$top_directors, "Directors with the Most Movies on Netflix"),
+           x = "Director",
+           y = "Number of Movies") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  })
+}
+
+# Run the application in a separate browser window
+shinyApp(ui = ui, server = server, launch.browser = TRUE) 
+
+```
 
 
 
