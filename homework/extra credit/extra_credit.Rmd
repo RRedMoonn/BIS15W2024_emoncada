@@ -1,6 +1,6 @@
 ---
 title: "Extra Credit W24"
-author: "Your Name Here"
+author: "Eva Moncada"
 date: "`r Sys.Date()`"
 output:
   html_document: default
@@ -26,6 +26,7 @@ In the `data` folder, you will find data about global shark attacks. The data ar
 library("tidyverse")
 library("janitor")
 library("naniar")
+library("lubridate")
 ```
 
 ## Load the data
@@ -37,14 +38,80 @@ global_sharks <- read_csv("data/global-shark-attack.csv") %>% clean_names()
 ## Questions
 1. (2 points) Start by doing some data exploration using your preferred function(s). What is the structure of the data? Where are the missing values and how are they represented?  
 
+```{r}
+str(global_sharks)
+```
+
+```{r}
+glimpse(global_sharks)
+```
+
+```{r}
+names(global_sharks)
+```
+```{r}
+global_sharks
+```
 
 2. (3 points) Are there any "hotspots" for shark incidents? Make a plot that shows the total number of incidents for the top 10 countries? Which country has the highest number of incidents?
 
+```{r}
+global_sharks %>%
+  group_by(country) %>%
+  summarize(total_incidents = n()) %>%
+  arrange(desc(total_incidents))  
+ggplot(global_sharks %>%
+         group_by(country) %>%
+         summarize(total_incidents = n()) %>%
+         arrange(desc(total_incidents)) %>%
+         head(10), 
+       aes(x = reorder(country, -total_incidents), y = total_incidents, fill = country)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 10 Countries with Highest Shark Incidents",
+       x = "Country",
+       y = "Total Incidents") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+USA has the most shark incidents, with Australia being the second highest country with the most shark incidents.
 
 3. (3 points) Are there months of the year when incidents are more likely to occur? Make a plot that shows the total number of incidents by month. Which month has the highest number of incidents?
 
+```{r}
+global_sharks <- global_sharks %>%
+  mutate(month = month(date, label = TRUE))
+ggplot(global_sharks, aes(x = month, fill = month)) +
+  geom_bar() +
+  labs(title = "Total Shark Incidents by Month",
+       x = "Month",
+       y = "Total Incidents") +
+  scale_x_discrete(labels = month.abb) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+January has the most number of incidents with July following that as the second month with the most incidents. 
+
 
 4. (3 points) Which activity is associated with the highest number of incidents? Make a plot that compares the top 5 riskiest activities. "NA" should not be classified as an activity.
+
+```{r}
+filtered_sharks <- global_sharks %>%
+  filter(!is.na(activity) & activity != "NA")
+incidents_by_activity <- filtered_sharks %>%
+  group_by(activity) %>%
+  summarize(total_incidents = n()) %>%
+  arrange(desc(total_incidents))
+top_activities <- head(incidents_by_activity, 5)
+ggplot(top_activities, aes(x = reorder(activity, -total_incidents), y = total_incidents, fill = activity)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 5 Riskiest Activities for Shark Incidents",
+       x = "Activity",
+       y = "Total Incidents") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 
 5. (3 points) The data include information on who was attacked. Make a plot that shows the total number of fatalities by sex- are males or females more likely to be killed by sharks?
