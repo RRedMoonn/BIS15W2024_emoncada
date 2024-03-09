@@ -3,7 +3,8 @@ title: "Extra Credit W24"
 author: "Eva Moncada"
 date: "`r Sys.Date()`"
 output:
-  html_document: default
+  html_document: 
+    keep_md: true
   pdf_document: default
 ---
 
@@ -27,6 +28,7 @@ library("tidyverse")
 library("janitor")
 library("naniar")
 library("lubridate")
+library("ggplot2")
 ```
 
 ## Load the data
@@ -113,20 +115,133 @@ ggplot(top_activities, aes(x = reorder(activity, -total_incidents), y = total_in
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+Surfing is the most risky activity associated with shark incidents. Swimming is the second riskiest activity for shark incidents. 
 
 5. (3 points) The data include information on who was attacked. Make a plot that shows the total number of fatalities by sex- are males or females more likely to be killed by sharks?
 
+```{r}
+ggplot(global_sharks %>% 
+         filter(!is.na(sex)) %>%
+         group_by(sex) %>%
+         summarize(total_fatalities = sum(fatal_y_n == "Y")),
+       aes(x = sex, y = total_fatalities, fill = sex)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Fatalities by Sex",
+       x = "Sex",
+       y = "Total Fatalities") +
+  theme_minimal()
+```
+
+Men are most likely to be killed from shark incidents than women. 
 
 6. (3 points) Make a plot that shows the range of age for the individuals that are attacked. Make sure to restrict sex to M or F (some of the codes used are not clear). You will also need to find a way to manage the messy age column.
 
+```{r}
+cleaned_sharks <- global_sharks %>%
+  filter(sex %in% c('M', 'F')) %>%
+  mutate(cleaned_age = as.numeric(str_extract(age, "\\d+")))
+ggplot(cleaned_sharks, aes(x = sex, y = cleaned_age, fill = sex)) +
+  geom_boxplot() +
+  labs(title = "Age Range for Individuals Attacked by Sex",
+       x = "Sex",
+       y = "Age") +
+  theme_minimal()
+```
+
+
+```{r}
+cleaned_sharks <- global_sharks %>%
+  filter(sex %in% c('M', 'F')) %>%
+  mutate(cleaned_age = as.numeric(str_extract(age, "\\d+")))
+cleaned_sharks %>%
+  group_by(sex) %>%
+  summarize(min_age = min(cleaned_age, na.rm = TRUE),
+            median_age = median(cleaned_age, na.rm = TRUE),
+            max_age = max(cleaned_age, na.rm = TRUE))
+```
+
+```{r}
+cleaned_sharks
+```
 
 7. (3 points) In the United States, what are the top 5 states where shark attacks have been recorded since 1950? Make a plot that compares the number of incidents for these 5 states.
 
+```{r}
+ggplot(global_sharks %>%
+         filter(country == "USA") %>%
+         group_by(area) %>%
+         summarize(total_incidents = n()) %>%
+         arrange(desc(total_incidents)) %>%
+         head(5), 
+       aes(x = reorder(area, -total_incidents), y = total_incidents, fill = area)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 5 States with Highest Shark Incidents in the United States",
+       x = "State",
+       y = "Total Incidents") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Florida has the highest number of shark incidents. 
 
 8. (3 points) Make a new object that limits the data to only include attacks attributed to Great White Sharks. This is trickier than it sounds, you should end up with 494 observations. Look online and adapt code involving `str_detect`. Which country has the highest number of Great White Shark attacks?
 
+```{r}
+great_white_attacks <- global_sharks %>%
+  filter(str_detect(str_replace_all(species, "[^[:alnum:] ]", ""), "(?i)White"))
+print(nrow(great_white_attacks))
+top_country_great_white <- great_white_attacks %>%
+  group_by(country) %>%
+  summarize(total_attacks = n()) %>%
+  arrange(desc(total_attacks)) 
+top_country_great_white
+```
 
 9. (4 points) Use faceting to compare the number of fatal and non-fatal attacks for the top 5 countries with the highest number of Great White Shark attacks.
-
+```{r}
+great_white_attacks <- global_sharks %>%
+  filter(str_detect(str_replace_all(species, "[^[:alnum:] ]", ""), "(?i)white"))
+top_countries <- great_white_attacks %>%
+  group_by(country) %>%
+  summarize(total_attacks = n()) %>%
+  arrange(desc(total_attacks)) %>%
+  head(5)
+top_countries_data <- global_sharks %>%
+  filter(country %in% top_countries$country)
+ggplot(top_countries_data, aes(x = country, fill = fatal_y_n)) +
+  geom_bar() +
+  facet_wrap(~country, scales = "free_y", ncol = 2) +
+  labs(title = "Comparison of Fatal and Non-Fatal Great White Shark Attacks",
+       x = "Country",
+       y = "Number of Attacks") +
+  scale_fill_manual(values = c("Y" = "red", "N" = "blue")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.spacing = unit(2, "lines"))
+```
 
 10. (3 points) Using the `global_sharks` data, what is one question that you are interested in exploring? Write the question and answer it using a plot or table. 
+
+```{r}
+global_sharks %>%
+  mutate(year = lubridate::year(date)) %>%
+  filter(year >= 1900)
+ggplot(global_sharks, aes(x = year)) +
+  geom_bar(stat = "count", fill = "violet") +
+  labs(title = "Number of Shark Attacks Per Year (Since 1900)",
+       x = "Year",
+       y = "Number of Attacks") +
+  theme_minimal()
+```
+```{r}
+global_sharks %>%
+  mutate(year = lubridate::year(date)) %>%
+  filter(year >= 1900) %>% 
+  group_by(year) %>%
+  summarize(total_incidents = n()) %>%
+  arrange(year) %>%
+  mutate(total_incidents = cumsum(total_incidents)) %>% 
+  arrange(desc(total_incidents))
+```
+
+I wanted to see how the shark incident rate has changed over the years. The years under 1800 were ommitted since they were outliers. 
+
