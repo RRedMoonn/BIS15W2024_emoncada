@@ -70,7 +70,7 @@ blood_count %>%
 ```
 
 
-6. FIX
+6. 
 
 ```{r}
 blood_count %>%
